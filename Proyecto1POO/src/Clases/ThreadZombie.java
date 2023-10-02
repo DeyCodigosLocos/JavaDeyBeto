@@ -5,6 +5,9 @@
 package Clases;
 
 import GUI.CampoDeBatalla;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -24,12 +27,19 @@ public class ThreadZombie extends Thread{
     @Override
     public void run() {
         while(isRunning){
+            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(),1, 1);
             try {
-                if (!zombie.isTraslape(zombie.getPosX()+1, zombie.getPosY()+1, ventana.getZombies(), ventana.getDefensas()))
-                    zombie.moverse(13, 13, 1);
+                for (int i = 0; i < puntos.size(); i++) {
+                    Point get = puntos.get(i);
+                    if(!zombie.isTraslape(get, ventana.getZombies(), ventana.getDefensas())){
+                        zombie.setPosX(get.x);
+                        zombie.setPosY(get.y);
+                        ventana.moverLabel(zombie.getPosX()*25, zombie.getPosY()*25, zombie.getLabel());
+                    }  
+                }
                 //System.out.println(zombie.getPosX()+", "+zombie.getPosY());
-                ventana.moverLabel(zombie.getPosX()*25, zombie.getPosY()*25, zombie.getLabel());
-                sleep(2000);
+                
+                sleep((new Random()).nextInt(4)*1000);
             } catch (InterruptedException ex) {
                 
             }

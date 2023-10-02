@@ -1,6 +1,7 @@
 package Clases;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -42,6 +43,20 @@ public class Personaje {
         this.posY = posY;
     }
     
+    
+    public boolean isTraslape(Point punto,ArrayList<ThreadZombie> zombies,ArrayList<ThreadDefensa> defensas ){
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa defensa = defensas.get(i);
+            if(defensa.getDefensa().getPosX() == punto.x && defensa.getDefensa().getPosY() == punto.y)
+                return true;  
+        }
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie zombie = zombies.get(i);
+            if(zombie.getZombie().getPosX() == punto.x && zombie.getZombie().getPosY() == punto.y)
+                return true;  
+        }
+        return false;
+    }
     
     
 }

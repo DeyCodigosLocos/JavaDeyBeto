@@ -9,16 +9,20 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
     ArrayList<ThreadZombie> zombies;
+    ArrayList<ThreadDefensa> defensas;
     JLabel[][] matriz = new JLabel[25][25];
     
     
     public CampoDeBatalla() {
         zombies = new ArrayList<ThreadZombie>();
+        defensas = new ArrayList<ThreadDefensa>();
         initComponents();
         generaMatriz();
+        
         
         this.nivel = 0;
         
@@ -27,7 +31,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public void generarZombies(int size){
         for (int i = 0; i < size; i++) {
             //crea el label
-            JLabel label =  new JLabel("100");
+            JLabel label =  new JLabel(""+i);
             label.setSize(25,25);
             label.setBackground(Color.BLUE);
             setAparicion(label);
@@ -38,20 +42,16 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             // Crear el thread
             ThreadZombie tz =  new ThreadZombie(zombie, this);
             zombies.add(tz);
-            
             pnlCampoJuego.add(label);
-            
-            cambiarImagen("C:\\Users\\X\\Desktop\\zombie1.png", label);
-
+            cambiarImagen("imgs//zombie1.png", label);
         } 
     }
     
-     private static ImageIcon resizeGifIcon(ImageIcon originalIcon, int width, int height) {
+    private static ImageIcon resizeGifIcon(ImageIcon originalIcon, int width, int height) {
         Image img = originalIcon.getImage();
         Image resizedImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImg);
     }
-    
     
     public void generaMatriz (){
         int posX, posY = 0;
@@ -99,6 +99,18 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public void moverLabel(int posX,int posY,JLabel label){
         label.setLocation(posX, posY);
     }
+
+    public ArrayList<ThreadZombie> getZombies() {
+        return zombies;
+    }
+
+    public ArrayList<ThreadDefensa> getDefensas() {
+        return defensas;
+    }
+    
+    
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -164,7 +176,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
         generarZombies(nivel*5+20);
-        
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
             get.start();   
