@@ -27,7 +27,7 @@ public class ThreadZombie extends Thread{
     @Override
     public void run() {
         while(isRunning){
-            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(),1, 1);
+            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(),13, 13);
             try {
                 for (int i = 0; i < puntos.size(); i++) {
                     Point get = puntos.get(i);

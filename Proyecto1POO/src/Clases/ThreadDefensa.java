@@ -17,7 +17,7 @@ public class ThreadDefensa {
     Defensa defensa;
     //boolean isPaused = false;
     
-    public ThreadDefensa(Zombie zombie, CampoDeBatalla refVentana) {
+    public ThreadDefensa(Defensa defensa, CampoDeBatalla refVentana) {
         this.defensa = defensa; 
         this.ventana = refVentana;
     }

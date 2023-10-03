@@ -31,6 +31,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public void generarZombies(int size){
         for (int i = 0; i < size; i++) {
             //crea el label
+            
             JLabel label =  new JLabel(""+i);
             label.setSize(25,25);
             label.setBackground(Color.BLUE);
@@ -87,7 +88,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     void cambiarImagen(String ruta,JLabel label){
         ImageIcon icon = new ImageIcon(ruta);
-        icon = resizeGifIcon(icon, 25, 25);
+        icon = resizeGifIcon(icon, 32, 32);
         label.setIcon(icon);
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setVerticalAlignment(JLabel.CENTER);
@@ -108,6 +109,19 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return defensas;
     }
     
+    private boolean checkPosition(int posX,int posY){
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie get = zombies.get(i);
+            if (get.getZombie().getPosX() == posX && get.getZombie().getPosY() == posY)
+                return false;
+        }
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa get = defensas.get(i);
+            if (get.getDefensa().getPosX() == posX && get.getDefensa().getPosY() == posY)
+                return false;
+        }
+        return true;
+    }
     
     
     
@@ -117,7 +131,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
         pnlCampoJuego = new javax.swing.JPanel();
         btnIniciarGuerra = new javax.swing.JButton();
-        lblTest = new javax.swing.JLabel();
+        txfPosX = new javax.swing.JTextField();
+        txfPosY = new javax.swing.JTextField();
+        btnColocarDefensa = new javax.swing.JButton();
+        lblPosX = new javax.swing.JLabel();
+        lblPosY = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -128,11 +146,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         pnlCampoJuego.setLayout(pnlCampoJuegoLayout);
         pnlCampoJuegoLayout.setHorizontalGroup(
             pnlCampoJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 605, Short.MAX_VALUE)
+            .addGap(0, 623, Short.MAX_VALUE)
         );
         pnlCampoJuegoLayout.setVerticalGroup(
             pnlCampoJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 605, Short.MAX_VALUE)
+            .addGap(0, 623, Short.MAX_VALUE)
         );
 
         btnIniciarGuerra.setText("Iniciar");
@@ -142,6 +160,23 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
         });
 
+        txfPosY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfPosYActionPerformed(evt);
+            }
+        });
+
+        btnColocarDefensa.setText("Colocar");
+        btnColocarDefensa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColocarDefensaActionPerformed(evt);
+            }
+        });
+
+        lblPosX.setText("X:");
+
+        lblPosY.setText("Y:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,14 +184,20 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(29, 29, 29)
-                        .addComponent(lblTest, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(51, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnColocarDefensa)
+                            .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                            .addComponent(txfPosY))))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,10 +206,18 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(131, 131, 131)
-                        .addComponent(lblTest, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(184, 184, 184)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnColocarDefensa))
                     .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -182,6 +231,33 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
         btnIniciarGuerra.setEnabled(false);
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
+
+    private void btnColocarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarDefensaActionPerformed
+        int posX = Integer.parseInt(txfPosX.getText());
+        int posY = Integer.parseInt(txfPosY.getText());
+        if(posX >= 0 && posX < 25 && posY >= 0 && posY < 25){
+            if(checkPosition(posX, posY)){
+                System.out.println(posX + ", " + posY);
+                JLabel label = new JLabel(posX + ", " + posY);
+                label.setSize(25,25);
+                label.setBackground(Color.BLUE);
+                label.setLocation(posX*25, posY*25);
+                
+                Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 12, 1, 1, 1, 1, 1, label.getLocation().x/25, label.getLocation().y/25, true);
+                defensa.setLabel(label);
+
+                ThreadDefensa td = new ThreadDefensa(defensa, this);
+                defensas.add(td);
+                pnlCampoJuego.add(label);
+                cambiarImagen("imgs//defensa1.png", label);
+                label.setVisible(true); 
+            }    
+        }
+    }//GEN-LAST:event_btnColocarDefensaActionPerformed
+
+    private void txfPosYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosYActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfPosYActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,8 +296,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnColocarDefensa;
     private javax.swing.JButton btnIniciarGuerra;
-    private javax.swing.JLabel lblTest;
+    private javax.swing.JLabel lblPosX;
+    private javax.swing.JLabel lblPosY;
     private javax.swing.JPanel pnlCampoJuego;
+    private javax.swing.JTextField txfPosX;
+    private javax.swing.JTextField txfPosY;
     // End of variables declaration//GEN-END:variables
 }
