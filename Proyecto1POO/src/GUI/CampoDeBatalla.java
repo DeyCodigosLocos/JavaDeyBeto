@@ -123,7 +123,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return true;
     }
     
-    
+    private boolean isInt(String dato){
+        try {
+            Integer.parseInt(dato);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -233,26 +240,31 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
 
     private void btnColocarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarDefensaActionPerformed
-        int posX = Integer.parseInt(txfPosX.getText());
-        int posY = Integer.parseInt(txfPosY.getText());
-        if(posX >= 0 && posX < 25 && posY >= 0 && posY < 25){
-            if(checkPosition(posX, posY)){
-                System.out.println(posX + ", " + posY);
-                JLabel label = new JLabel(posX + ", " + posY);
-                label.setSize(25,25);
-                label.setBackground(Color.BLUE);
-                label.setLocation(posX*25, posY*25);
-                
-                Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 12, 1, 1, 1, 1, 1, label.getLocation().x/25, label.getLocation().y/25, true);
-                defensa.setLabel(label);
+         if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
+            int posX = Integer.parseInt(txfPosX.getText());
+            int posY = Integer.parseInt(txfPosY.getText());
 
-                ThreadDefensa td = new ThreadDefensa(defensa, this);
-                defensas.add(td);
-                pnlCampoJuego.add(label);
-                cambiarImagen("imgs//defensa1.png", label);
-                label.setVisible(true); 
-            }    
-        }
+            if(posX >= 0 && posX < 25 && posY >= 0 && posY < 25){
+                if(checkPosition(posX, posY)){
+                    Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 12, 1, 1, 1, 1, 100, posX, posY, true);
+                    System.out.println(posX + ", " + posY);
+                    JLabel label = new JLabel(defensa.getNivel()+ "");
+                    label.setSize(25,25);
+                    label.setBackground(Color.BLUE);
+                    label.setLocation(posX*25, posY*25);
+
+                    
+                    defensa.setLabel(label);
+
+                    ThreadDefensa td = new ThreadDefensa(defensa, this);
+                    defensas.add(td);
+                    pnlCampoJuego.add(label);
+                    //cambiarImagen("imgs//defensa1.png", label);
+                    label.setVisible(true); 
+                }
+            } 
+        }else
+             JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnColocarDefensaActionPerformed
 
     private void txfPosYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosYActionPerformed

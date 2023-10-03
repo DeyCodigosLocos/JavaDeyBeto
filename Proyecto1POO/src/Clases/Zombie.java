@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Clases;
 
 import java.awt.Point;
@@ -46,36 +42,9 @@ public class Zombie extends Personaje{
         }
     }
     
-    public ArrayList<Point> setPossibleMoves(){
-        ArrayList<Point> puntos = new ArrayList<Point>();
-        puntos.add(new Point(this.posX+1,this.posY));
-        puntos.add(new Point(this.posX-1,this.posY));
-        puntos.add(new Point(this.posX,this.posY+1));
-        puntos.add(new Point(this.posX,this.posY-1));
-        puntos.add(new Point(this.posX+1,this.posY+1));
-        puntos.add(new Point(this.posX-1,this.posY+1));
-        puntos.add(new Point(this.posX-1,this.posY-1));
-        puntos.add(new Point(this.posX+1,this.posY-1));
-
-        Iterator<Point> iterator = puntos.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            Point punto = iterator.next();
-            if(punto.x < 0 || punto.x > 25){
-                iterator.remove();
-            }else if (punto.y < 0 || punto.y > 25){
-                iterator.remove(); 
-            }
-        }
-        return puntos;
-    }
     
-    public void printPoints(ArrayList<Point> puntos){
-        for (int i = 0; i < puntos.size(); i++) {
-            Point get = puntos.get(i);
-            System.out.println(get.x + ", "+get.y);
-        }
-    }
+    
+    
     
     public double getDistance(int x1, int y1, int x2, int y2){
         return Math.sqrt(Math.pow((x1-x2),2)+Math.pow((y1-y2),2));

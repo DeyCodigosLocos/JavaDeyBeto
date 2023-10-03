@@ -27,7 +27,7 @@ public class ThreadZombie extends Thread{
     @Override
     public void run() {
         while(isRunning){
-            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(),13, 13);
+            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),13, 13);
             try {
                 for (int i = 0; i < puntos.size(); i++) {
                     Point get = puntos.get(i);
@@ -70,5 +70,12 @@ public class ThreadZombie extends Thread{
     public void setZombie(Zombie zombie) {
         this.zombie = zombie;
     }
+
+    @Override
+    public String toString() {
+        return "ThreadZombie{" + "zombie=" + zombie + '}';
+    }
+    
+    
     
 }

@@ -1,10 +1,13 @@
 package Clases;
 
+import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import java.util.Iterator;
+import static java.util.Spliterators.iterator;
 
 public class Personaje {
     String nombre,tipo;
@@ -26,6 +29,11 @@ public class Personaje {
         this.equipo = equipo;
         //this.imagen = imagen;
     }
+    
+    public String toString(){
+        return "Nombre: " + nombre + " X: " + posX + " Y: " + posY;
+    }
+
 
     public int getPosX() {
         return posX;
@@ -42,6 +50,23 @@ public class Personaje {
     public void setPosY(int posY) {
         this.posY = posY;
     }
+
+    public int getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(int nivel) {
+        this.nivel = nivel;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public void setVida(int vida) {
+        this.vida = vida;
+    }
+    
     
     
     public boolean isTraslape(Point punto,ArrayList<ThreadZombie> zombies,ArrayList<ThreadDefensa> defensas ){
@@ -58,5 +83,53 @@ public class Personaje {
         return false;
     }
     
+    public void printPoints(ArrayList<Point> puntos){
+        for (int i = 0; i < puntos.size(); i++) {
+            Point get = puntos.get(i);
+            System.out.println(get.x + ", "+get.y);
+        }
+    }
+    
+    public ArrayList<Point> setPossibleMoves(int cant){
+        ArrayList<Point> puntos = new ArrayList<Point>();
+        puntos.add(new Point(this.posX+cant,this.posY));
+        puntos.add(new Point(this.posX-cant,this.posY));
+        puntos.add(new Point(this.posX,this.posY+cant));
+        puntos.add(new Point(this.posX,this.posY-cant));
+        puntos.add(new Point(this.posX+cant,this.posY+cant));
+        puntos.add(new Point(this.posX-cant,this.posY+cant));
+        puntos.add(new Point(this.posX-cant,this.posY-cant));
+        puntos.add(new Point(this.posX+cant,this.posY-cant));
+
+        Iterator<Point> iterator = puntos.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point punto = iterator.next();
+            if(punto.x < 0 || punto.x > 25){
+                iterator.remove();
+            }else if (punto.y < 0 || punto.y > 25){
+                iterator.remove(); 
+            }
+        }
+        return puntos;
+    }
+    
+    public ArrayList<Point> getEsquinas(){
+        ArrayList<Point> puntos = new ArrayList<Point>();
+        puntos.add(new Point(this.posX-this.alcance, this.posY-this.alcance));
+        puntos.add(new Point(this.posX+this.alcance, this.posY+this.alcance));
+        for (int i = 0; i < puntos.size(); i++) {
+            Point get = puntos.get(i);
+            if(get.x < 0 )
+                get.x = 0;
+            if (get.x > 24)
+                get.x = 24;
+            if (get.y < 0)
+                get.y = 0;
+            if (get.y > 24)
+                get.y = 24;
+        }
+        return puntos;
+    }
     
 }

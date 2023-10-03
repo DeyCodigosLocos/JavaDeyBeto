@@ -4,6 +4,7 @@
  */
 package Clases;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -21,7 +22,8 @@ public class Defensa extends Personaje{
         this.velocidad = velocidad;
         this.label = label;
     }
-
+    
+    
     public JLabel getLabel() {
         return label;
     }
@@ -30,9 +32,23 @@ public class Defensa extends Personaje{
         this.label = label;
     }
     
-    
-    
-    
-   
+    public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies){
+        for (int i = 1; i <= this.alcance; i++) {
+            ArrayList<Point> puntos = setPossibleMoves(i);
+            //System.out.println("PUNTOS POSIBLES: ");
+            printPoints(puntos);
+            //System.out.println("");
+            for (int j = 0; i < puntos.size(); j++) {
+                for (int k = 0; k < zombies.size(); k++) {
+                    ThreadZombie zombie = zombies.get(k);
+                    //System.out.println("ZOMBIE X:  " + zombie.getZombie().getPosX() + "  ZOMBIE Y :  " + zombie.getZombie().getPosY());
+                    System.out.println("X:  " + puntos.get(j).x + "  Y:  " + puntos.get(j).y );
+                    if(zombie.getZombie().getPosX() == puntos.get(j).x && zombie.getZombie().getPosY() == puntos.get(j).y)
+                        return zombie;
+                }
+            }
+        }
+        return null;
+    }
     
 }

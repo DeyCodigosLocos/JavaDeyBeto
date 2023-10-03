@@ -60,6 +60,12 @@ public class ThreadDefensa {
     public void setDefensa(Defensa defensa) {
         this.defensa = defensa;
     }
+
+    @Override
+    public String toString() {
+        return "ThreadDefensa{" + "defensa=" + defensa + '}';
+    }
+    
     
     
 }
