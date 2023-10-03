@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Clases;
 
 import GUI.CampoDeBatalla;
@@ -11,7 +7,7 @@ import static java.lang.Thread.sleep;
  *
  * @author X
  */
-public class ThreadDefensa {
+public class ThreadDefensa extends Thread{
     CampoDeBatalla ventana;
     boolean isRunning = true;
     Defensa defensa;
@@ -22,14 +18,27 @@ public class ThreadDefensa {
         this.ventana = refVentana;
     }
     
+    @Override
     public void run() {
         while(isRunning){
             try {
-                /*
-                defensa.moverse(13, 13, 1);
-                System.out.println(defensa.getPosX()+", "+defensa.getPosY());
-                ventana.moverLabel(defensa.getPosX()*25, defensa.getPosY()*25, defensa.getLabel());*/
-                sleep(2000);
+                
+                //System.out.println("entro al try");
+                if (defensa.getObjetivo() == null || defensa.getObjetivo().isDead()){
+                    //System.out.println("entro al if 1");
+                    defensa.setObjetivo(defensa.getCloserZombie(ventana.getZombies()));
+                }else{
+                    defensa.atacar();
+                    defensa.getObjetivo().getZombie().label.setText(defensa.getObjetivo().getZombie().getVida()+"");
+                    if(defensa.getObjetivo().isDead()){
+                        defensa.getObjetivo().getZombie().morir();
+                        defensa.getObjetivo().isRunning = false;
+                        //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
+                        ventana.cambiarImagen("imgs//zombieMuerto.png",defensa.getObjetivo().getZombie().getLabel());
+                    }
+                        
+                }
+                sleep(1000);
             } catch (InterruptedException ex) {
                 
             }
@@ -65,6 +74,8 @@ public class ThreadDefensa {
     public String toString() {
         return "ThreadDefensa{" + "defensa=" + defensa + '}';
     }
+
+  
     
     
     

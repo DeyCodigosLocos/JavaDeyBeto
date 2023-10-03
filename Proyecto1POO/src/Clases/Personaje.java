@@ -1,7 +1,6 @@
 package Clases;
 
 import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
-import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -10,29 +9,87 @@ import java.util.Iterator;
 import static java.util.Spliterators.iterator;
 
 public class Personaje {
-    String nombre,tipo;
-    int alcance,nivel,nivelAparicion,espacios,danoPorsegundo,vida,posX,posY;
-    boolean equipo;
-    //ImageIcon imagen;
+    private String nombre,tipo;
+    private int alcance,nivel,nivelAparicion,espacios,danoPorSegundo,vida,posX,posY;
+    private boolean activo;
+    private ArrayList<String> ataques;
 
-    public Personaje(String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY, boolean equipo) {
+    public Personaje(String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.alcance = alcance;
         this.nivel = nivel;
         this.nivelAparicion = nivelAparicion;
         this.espacios = espacios;
-        this.danoPorsegundo = danoPorsegundo;
+        this.danoPorSegundo = danoPorsegundo;
         this.vida = vida;
         this.posX = posX;
         this.posY = posY;
-        this.equipo = equipo;
-        //this.imagen = imagen;
+        this.activo = true;
+        ArrayList<String> ataques = new ArrayList<String>();
     }
     
     public String toString(){
         return "Nombre: " + nombre + " X: " + posX + " Y: " + posY;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getAlcance() {
+        return alcance;
+    }
+
+    public void setAlcance(int alcance) {
+        this.alcance = alcance;
+    }
+
+    public int getNivelAparicion() {
+        return nivelAparicion;
+    }
+
+    public void setNivelAparicion(int nivelAparicion) {
+        this.nivelAparicion = nivelAparicion;
+    }
+
+    public int getEspacios() {
+        return espacios;
+    }
+
+    public void setEspacios(int espacios) {
+        this.espacios = espacios;
+    }
+
+    public int getDanoPorSegundo() {
+        return danoPorSegundo;
+    }
+
+    public void setDanoPorsegundo(int danoPorsegundo) {
+        this.danoPorSegundo = danoPorsegundo;
+    }
+
+    public ArrayList<String> getAtaques() {
+        return ataques;
+    }
+
+    public void setAtaques(ArrayList<String> ataques) {
+        this.ataques = ataques;
+    }
+    
+    
 
 
     public int getPosX() {

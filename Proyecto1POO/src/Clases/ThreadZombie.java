@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Clases;
 
 import GUI.CampoDeBatalla;
@@ -35,7 +31,7 @@ public class ThreadZombie extends Thread{
                         zombie.setPosX(get.x);
                         zombie.setPosY(get.y);
                         ventana.moverLabel(zombie.getPosX()*25, zombie.getPosY()*25, zombie.getLabel());
-                    }  
+                    }     
                 }
                 //System.out.println(zombie.getPosX()+", "+zombie.getPosY());
                 
@@ -74,6 +70,10 @@ public class ThreadZombie extends Thread{
     @Override
     public String toString() {
         return "ThreadZombie{" + "zombie=" + zombie + '}';
+    }
+    
+    public boolean isDead(){
+        return getZombie().getVida() <= 0;
     }
     
     

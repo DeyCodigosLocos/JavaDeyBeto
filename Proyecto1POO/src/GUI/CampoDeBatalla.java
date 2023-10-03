@@ -1,4 +1,3 @@
-
 package GUI;
 
 import Clases.*;
@@ -37,14 +36,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.setBackground(Color.BLUE);
             setAparicion(label);
             // crear el zombie aleatoriamente, del tipo que corresponda
-            Zombie zombie = new Zombie(label, "alfredito", "contacto", 12, 1, 1, 1, 1, 1, label.getLocation().x/25, label.getLocation().y/25, false);
+            Zombie zombie = new Zombie(label, "alfredito", "contacto", 12, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
             zombie.setLabel(label);
-            
+            label.setText(zombie.getVida()+"");
             // Crear el thread
             ThreadZombie tz =  new ThreadZombie(zombie, this);
             zombies.add(tz);
             pnlCampoJuego.add(label);
-            cambiarImagen("imgs//zombie1.png", label);
+            //cambiarImagen("imgs//zombie1.png", label);
         } 
     }
     
@@ -86,7 +85,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }         
     }
     
-    void cambiarImagen(String ruta,JLabel label){
+    public void cambiarImagen(String ruta,JLabel label){
         ImageIcon icon = new ImageIcon(ruta);
         icon = resizeGifIcon(icon, 32, 32);
         label.setIcon(icon);
@@ -234,7 +233,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         generarZombies(nivel*5+20);
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
-            get.start();   
+            get.start();
+        }
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa get = defensas.get(i);
+            get.start();
         }
         btnIniciarGuerra.setEnabled(false);
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
@@ -246,12 +249,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             if(posX >= 0 && posX < 25 && posY >= 0 && posY < 25){
                 if(checkPosition(posX, posY)){
-                    Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 12, 1, 1, 1, 1, 100, posX, posY, true);
+                    Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 2, 1, 1, 1, 2, 100, posX, posY);
                     System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);
                     label.setBackground(Color.BLUE);
                     label.setLocation(posX*25, posY*25);
+                    label.setVisible(true); 
 
                     
                     defensa.setLabel(label);
@@ -259,8 +263,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     ThreadDefensa td = new ThreadDefensa(defensa, this);
                     defensas.add(td);
                     pnlCampoJuego.add(label);
-                    //cambiarImagen("imgs//defensa1.png", label);
-                    label.setVisible(true); 
+                    cambiarImagen("imgs//defensa1.png", label); 
                 }
             } 
         }else

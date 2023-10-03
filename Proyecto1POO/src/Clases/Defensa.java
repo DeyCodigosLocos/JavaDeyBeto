@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Clases;
 
 import java.awt.Point;
@@ -14,13 +10,23 @@ import javax.swing.JLabel;
  * @author X
  */
 public class Defensa extends Personaje{
-    int velocidad;
-    JLabel label;
+    private int velocidad;
+    private JLabel label;
+    private ThreadZombie objetivo;
 
-    public Defensa(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY, boolean equipo) {
-        super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY, equipo);
+    public Defensa(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
+        super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
         this.velocidad = velocidad;
         this.label = label;
+        this.objetivo = null;
+    }
+
+    public ThreadZombie getObjetivo() {
+        return objetivo;
+    }
+
+    public void setObjetivo(ThreadZombie objetivo) {
+        this.objetivo = objetivo;
     }
     
     
@@ -33,12 +39,12 @@ public class Defensa extends Personaje{
     }
     
     public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies){
-        for (int i = 1; i <= this.alcance; i++) {
+        for (int i = 1; i <= this.getAlcance(); i++) {
             ArrayList<Point> puntos = setPossibleMoves(i);
             //System.out.println("PUNTOS POSIBLES: ");
             printPoints(puntos);
             //System.out.println("");
-            for (int j = 0; i < puntos.size(); j++) {
+            for (int j = 0; j < puntos.size(); j++) {
                 for (int k = 0; k < zombies.size(); k++) {
                     ThreadZombie zombie = zombies.get(k);
                     //System.out.println("ZOMBIE X:  " + zombie.getZombie().getPosX() + "  ZOMBIE Y :  " + zombie.getZombie().getPosY());
@@ -47,8 +53,12 @@ public class Defensa extends Personaje{
                         return zombie;
                 }
             }
-        }
+        } 
         return null;
+    }
+    
+    public void atacar(){
+        this.getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
     }
     
 }
