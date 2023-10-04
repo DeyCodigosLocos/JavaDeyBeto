@@ -1,6 +1,6 @@
 package Clases;
 
-import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
+//import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -187,6 +187,15 @@ public class Personaje {
                 get.y = 24;
         }
         return puntos;
+    }
+    
+    public boolean isDead(){
+        return this.getVida() <= 0;
+    }
+    
+    public void morir(){
+        this.setPosX(-1);
+        this.setPosY(-1);
     }
     
 }

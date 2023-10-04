@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-/**
- *
- * @author X
- */
 public class Defensa extends Personaje{
     private int velocidad;
     private JLabel label;
@@ -57,7 +53,7 @@ public class Defensa extends Personaje{
         return null;
     }
     
-    public void atacar(){
+    public void atacarZombie(){
         this.getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
     }
     

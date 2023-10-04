@@ -24,13 +24,13 @@ public class ThreadDefensa extends Thread{
             try {
                 
                 //System.out.println("entro al try");
-                if (defensa.getObjetivo() == null || defensa.getObjetivo().isDead()){
+                if (defensa.getObjetivo() == null || defensa.getObjetivo().getZombie().isDead()){
                     //System.out.println("entro al if 1");
                     defensa.setObjetivo(defensa.getCloserZombie(ventana.getZombies()));
                 }else{
-                    defensa.atacar();
-                    defensa.getObjetivo().getZombie().label.setText(defensa.getObjetivo().getZombie().getVida()+"");
-                    if(defensa.getObjetivo().isDead()){
+                    defensa.atacarZombie();
+                    defensa.getObjetivo().getZombie().getLabel().setText(defensa.getObjetivo().getZombie().getVida()+"");
+                    if(defensa.getObjetivo().getZombie().isDead()){
                         defensa.getObjetivo().getZombie().morir();
                         defensa.getObjetivo().isRunning = false;
                         //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());

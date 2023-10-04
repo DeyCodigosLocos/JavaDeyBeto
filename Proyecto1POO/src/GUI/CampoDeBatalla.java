@@ -36,7 +36,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.setBackground(Color.BLUE);
             setAparicion(label);
             // crear el zombie aleatoriamente, del tipo que corresponda
-            Zombie zombie = new Zombie(label, "alfredito", "contacto", 12, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
+            Zombie zombie = new Zombie(label, "alfredito", "contacto", 3, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
             zombie.setLabel(label);
             label.setText(zombie.getVida()+"");
             // Crear el thread
@@ -247,7 +247,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             int posX = Integer.parseInt(txfPosX.getText());
             int posY = Integer.parseInt(txfPosY.getText());
 
-            if(posX >= 0 && posX < 25 && posY >= 0 && posY < 25){
+            if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
                     Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 2, 1, 1, 1, 2, 100, posX, posY);
                     System.out.println(posX + ", " + posY);
@@ -257,15 +257,18 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     label.setLocation(posX*25, posY*25);
                     label.setVisible(true); 
 
-                    
+
                     defensa.setLabel(label);
 
                     ThreadDefensa td = new ThreadDefensa(defensa, this);
                     defensas.add(td);
                     pnlCampoJuego.add(label);
+                    label.setText(defensa.getVida()+"");
                     cambiarImagen("imgs//defensa1.png", label); 
-                }
-            } 
+                }else
+                    JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
+            }else
+                JOptionPane.showMessageDialog(pnlCampoJuego, "Error, no se puede colocar una defensa en " + posX + "," + posY, "Error", JOptionPane.ERROR_MESSAGE);
         }else
              JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnColocarDefensaActionPerformed
@@ -274,35 +277,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txfPosYActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CampoDeBatalla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CampoDeBatalla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CampoDeBatalla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CampoDeBatalla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CampoDeBatalla().setVisible(true);

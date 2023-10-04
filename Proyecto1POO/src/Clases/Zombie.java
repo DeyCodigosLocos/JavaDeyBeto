@@ -12,7 +12,7 @@ import javax.swing.JLabel;
  */
 public class Zombie extends Personaje{
     int velocidad;
-    JLabel label;
+    private JLabel label;
     ThreadDefensa objetivo;
     
 
@@ -57,9 +57,29 @@ public class Zombie extends Personaje{
         return array;
     }
     
-    public void morir(){
-        this.setPosX(-1);
-        this.setPosY(-1);
+    public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas){
+        for (int i = 1; i <= this.getAlcance(); i++) {
+            ArrayList<Point> puntos = setPossibleMoves(i);
+            //System.out.println("PUNTOS POSIBLES: ");
+            printPoints(puntos);
+            //System.out.println("");
+            for (int j = 0; j < puntos.size(); j++){
+                for (int k = 0; k < defensas.size(); k++){
+                    ThreadDefensa defensa = defensas.get(k);
+                    //System.out.println("ZOMBIE X:  " + zombie.getZombie().getPosX() + "  ZOMBIE Y :  " + zombie.getZombie().getPosY());
+                    System.out.println("X:  " + puntos.get(j).x + "  Y:  " + puntos.get(j).y );
+                    if(defensa.getDefensa().getPosX() == puntos.get(j).x && defensa.getDefensa().getPosY() == puntos.get(j).y)
+                        return defensa;
+                }
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    public void atacarDefensa(){
+        this.getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
     }
 }
             

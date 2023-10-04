@@ -12,6 +12,7 @@ import java.util.Random;
 public class ThreadZombie extends Thread{
     CampoDeBatalla ventana;
     boolean isRunning = true;
+    //boolean isAtacking = false;
     Zombie zombie;
     //boolean isPaused = false;
     
@@ -25,17 +26,32 @@ public class ThreadZombie extends Thread{
         while(isRunning){
             ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),13, 13);
             try {
-                for (int i = 0; i < puntos.size(); i++) {
-                    Point get = puntos.get(i);
-                    if(!zombie.isTraslape(get, ventana.getZombies(), ventana.getDefensas())){
-                        zombie.setPosX(get.x);
-                        zombie.setPosY(get.y);
-                        ventana.moverLabel(zombie.getPosX()*25, zombie.getPosY()*25, zombie.getLabel());
-                    }     
-                }
-                //System.out.println(zombie.getPosX()+", "+zombie.getPosY());
                 
-                sleep((new Random()).nextInt(4)*1000);
+                if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
+                    //System.out.println("entro al if 1");
+                    zombie.setObjetivo(zombie.getCloserDefense(ventana.getDefensas()));
+                    if(zombie.getObjetivo() == null){
+                        for (int i = 0; i < puntos.size(); i++) {
+                            Point get = puntos.get(i);
+                            if(!zombie.isTraslape(get, ventana.getZombies(), ventana.getDefensas())){
+                                zombie.setPosX(get.x);
+                                zombie.setPosY(get.y);
+                                ventana.moverLabel(zombie.getPosX()*25, zombie.getPosY()*25, zombie.getLabel());
+                            }     
+                        }
+                    }
+                    
+                }else{
+                    zombie.atacarDefensa();
+                    zombie.getObjetivo().getDefensa().getLabel().setText(zombie.getObjetivo().getDefensa().getVida()+"");
+                    if(zombie.getObjetivo().getDefensa().isDead()){
+                        zombie.getObjetivo().getDefensa().morir();
+                        zombie.getObjetivo().isRunning = false;
+                        //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
+                        ventana.cambiarImagen("imgs//defensaDestruida.png",zombie.getObjetivo().getDefensa().getLabel());
+                    }
+                }
+                sleep(((new Random()).nextInt(3-1)+1)*1000);
             } catch (InterruptedException ex) {
                 
             }
@@ -72,9 +88,7 @@ public class ThreadZombie extends Thread{
         return "ThreadZombie{" + "zombie=" + zombie + '}';
     }
     
-    public boolean isDead(){
-        return getZombie().getVida() <= 0;
-    }
+    
     
     
     
