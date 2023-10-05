@@ -42,6 +42,7 @@
                           <Component id="txfPosY" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <Component id="btnColocarArbolDeVida" min="-2" pref="85" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="163" max="32767" attributes="0"/>
           </Group>
@@ -51,8 +52,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="btnIniciarGuerra" min="-2" pref="44" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="184" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -64,10 +65,18 @@
                           <Component id="lblPosY" min="-2" pref="26" max="-2" attributes="0"/>
                           <Component id="txfPosY" min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btnColocarDefensa" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnColocarDefensa" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnColocarArbolDeVida" min="-2" pref="85" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
-                  <Component id="pnlCampoJuego" min="-2" max="-2" attributes="0"/>
+                  <Component id="pnlCampoJuego" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="27" max="32767" attributes="0"/>
           </Group>
@@ -132,6 +141,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Y:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnColocarArbolDeVida">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="2" name="C:\Users\X\Desktop\Repositorios\Local JavaDeyBeto\Proyecto1\imgs\arbolDeLaVida.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Colocar Arbol"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnColocarArbolDeVidaActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

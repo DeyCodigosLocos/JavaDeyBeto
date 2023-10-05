@@ -24,7 +24,7 @@ public class ThreadZombie extends Thread{
     @Override
     public void run() {
         while(isRunning){
-            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),13, 13);
+            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),ventana.getArbolDeVida().getPosX(), ventana.getArbolDeVida().getPosY());
             try {
                 
                 if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
@@ -48,7 +48,7 @@ public class ThreadZombie extends Thread{
                         zombie.getObjetivo().getDefensa().morir();
                         zombie.getObjetivo().isRunning = false;
                         //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
-                        ventana.cambiarImagen("imgs//defensaDestruida.png",zombie.getObjetivo().getDefensa().getLabel());
+                        ventana.cambiarImagenDeLabel("imgs//ruinas.png",zombie.getObjetivo().getDefensa().getLabel());
                     }
                 }
                 sleep(((new Random()).nextInt(3-1)+1)*1000);

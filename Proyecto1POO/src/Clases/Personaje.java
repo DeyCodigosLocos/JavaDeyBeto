@@ -85,13 +85,6 @@ public class Personaje {
         return ataques;
     }
 
-    public void setAtaques(ArrayList<String> ataques) {
-        this.ataques = ataques;
-    }
-    
-    
-
-
     public int getPosX() {
         return posX;
     }

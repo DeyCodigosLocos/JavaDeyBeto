@@ -76,8 +76,6 @@ public class Zombie extends Personaje{
         return null;
     }
     
-    
-    
     public void atacarDefensa(){
         this.getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
     }
