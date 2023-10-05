@@ -285,7 +285,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
-        generarZombies(nivel*5+20);
+        generarZombies(nivel*5+5);
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
             get.start();
@@ -304,14 +304,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    Defensa defensa = new Defensa(new JLabel(), "alfredito", "contacto", 2, 1, 1, 1, 2, 100, posX, posY);
+                    Defensa defensa = new Defensa(new JLabel(), "Fortin", "contacto", 2, 1, 1, 1, 2, 10, posX, posY);
                     System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);
                     label.setBackground(Color.BLUE);
                     label.setLocation(posX*25, posY*25);
                     label.setVisible(true); 
-
 
                     defensa.setLabel(label);
 
@@ -364,7 +363,19 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }else
              JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnColocarArbolDeVidaActionPerformed
-
+   
+    /*public void imprimirActividad(){
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie get = zombies.get(i);
+            ArrayList<String> listaAtaques = get.getZombie().getAtaques();
+            int largo =  get.getZombie().getAtaques().size();
+            for (int j = 0; j < largo; j++) {
+                System.out.println(listaAtaques.get(j));
+            }
+        }
+    }*/
+    
+    
     public static void main(String args[]) {
         
         java.awt.EventQueue.invokeLater(new Runnable() {

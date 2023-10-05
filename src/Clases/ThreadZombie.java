@@ -34,11 +34,13 @@ public class ThreadZombie extends Thread{
                 if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
                     //System.out.println("entro al if 1");
                     
+                    /*if (zombie.getObjetivo() != null && zombie.getObjetivo().getDefensa().isDead()){
+                        zombie.getObjetivo().getDefensa().getAtaques().add("Defensa" + zombie.getObjetivo().getDefensa().getPosX() + "," +zombie.getObjetivo().getDefensa().getPosY()+" atacó a " + zombie.getObjetivo().getDefensa().getObjetivo().getZombie().getPosX() + "," + zombie.getObjetivo().getDefensa().getObjetivo().getZombie().getPosY()
+                        +" ,tenía " + zombie.getVidaInicialObjetivo() + " de vida y termino en 0 de vida" );
+                    }*/
+                    
                     zombie.setObjetivo(zombie.getCloserDefense(ventana.getDefensas()));
-                    if (zombie.getObjetivo() != null){
-                        zombie.setVidaInicialObjetivo(zombie.getObjetivo().getDefensa().getVida());
-                        //zombie.setIsAttacking(true);
-                    }
+                    
                     if(zombie.getObjetivo() == null){
                         for (int i = 0; i < puntos.size(); i++) {
                             Point get = puntos.get(i);
@@ -54,16 +56,32 @@ public class ThreadZombie extends Thread{
                     zombie.atacarDefensa();
                     zombie.getObjetivo().getDefensa().getLabel().setText(zombie.getObjetivo().getDefensa().getVida()+"");
                     if(zombie.getObjetivo().getDefensa().isDead()){
-                        zombie.getAtaques().add("Zombie" + zombie.getPosX() + "," +zombie.getPosY()+" atacó a " + zombie.getObjetivo().getDefensa().getPosX() + "," + zombie.getObjetivo().getDefensa().getPosY()
-                        +" ,tenía " + zombie.getVidaInicialObjetivo() + " de vida y termino en 0 de vida" );
+                        /*
+                        zombie.getAtaques().add("Zombie" + zombie.getPosX() + "," +zombie.getPosY()+" ataco a " + zombie.getObjetivo().getDefensa().getPosX() + "," + zombie.getObjetivo().getDefensa().getPosY()
+                        +" ,tenia " + zombie.getVidaInicialObjetivo() + " de vida y termino en 0 de vida" );
+                        */
+                        
                         zombie.getObjetivo().getDefensa().morir();
+                        
                         //se ocupa obtener el ataque en curso del objetivo en caso que lo tenga, baby girl si yo te quiero
+                        
+                        /*
+                        if(zombie.getObjetivo().getDefensa().getIsAttacking()){
+                            zombie.getObjetivo().getDefensa().getAtaques().add("Defensa" + zombie.getObjetivo().getDefensa().getPosX() + "," +zombie.getObjetivo().getDefensa().getPosY()+" atacó a " + zombie.getObjetivo().getDefensa().getObjetivo().getZombie().getPosX() + "," + zombie.getObjetivo().getDefensa().getObjetivo().getZombie().getPosY()
+                            +" ,tenía " + zombie.getVidaInicialObjetivo() + " de vida y termino en 0 de vida" );
+                        }*/
+                        
+                        
                         zombie.getObjetivo().isRunning = false;
                         //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
                         ventana.cambiarImagenDeLabel("imgs//ruinas.png",zombie.getObjetivo().getDefensa().getLabel());
                     }
                 }
                 sleep(((new Random()).nextInt(3-1)+1)*1000);
+                
+                //ventana.imprimirActividad();
+                
+                System.out.println("\n\n");
             } catch (InterruptedException ex) {
                 
             }

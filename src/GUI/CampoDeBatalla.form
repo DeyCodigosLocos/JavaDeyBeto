@@ -146,9 +146,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnColocarArbolDeVida">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\X\Desktop\Repositorios\Local JavaDeyBeto\Proyecto1\imgs\arbolDeLaVida.png"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Colocar Arbol"/>
       </Properties>
       <Events>

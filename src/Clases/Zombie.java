@@ -93,8 +93,6 @@ public class Zombie extends Personaje{
             for (int j = 0; j < puntos.size(); j++){
                 for (int k = 0; k < defensas.size(); k++){
                     ThreadDefensa defensa = defensas.get(k);
-                    //System.out.println("ZOMBIE X:  " + zombie.getZombie().getPosX() + "  ZOMBIE Y :  " + zombie.getZombie().getPosY());
-                    System.out.println("X:  " + puntos.get(j).x + "  Y:  " + puntos.get(j).y );
                     if(defensa.getDefensa().getPosX() == puntos.get(j).x && defensa.getDefensa().getPosY() == puntos.get(j).y)
                         return defensa;
                 }
