@@ -26,10 +26,19 @@ public class ThreadZombie extends Thread{
         while(isRunning){
             ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
             try {
+//                if(zombie.isDead() && zombie.getObjetivo() != null){
+//                    zombie.setVidaFinalObjetivo(zombie.getObjetivo().getDefensa().getVida());
+//                    
+//                }
                 
                 if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
                     //System.out.println("entro al if 1");
+                    
                     zombie.setObjetivo(zombie.getCloserDefense(ventana.getDefensas()));
+                    if (zombie.getObjetivo() != null){
+                        zombie.setVidaInicialObjetivo(zombie.getObjetivo().getDefensa().getVida());
+                        //zombie.setIsAttacking(true);
+                    }
                     if(zombie.getObjetivo() == null){
                         for (int i = 0; i < puntos.size(); i++) {
                             Point get = puntos.get(i);
@@ -45,7 +54,10 @@ public class ThreadZombie extends Thread{
                     zombie.atacarDefensa();
                     zombie.getObjetivo().getDefensa().getLabel().setText(zombie.getObjetivo().getDefensa().getVida()+"");
                     if(zombie.getObjetivo().getDefensa().isDead()){
+                        zombie.getAtaques().add("Zombie" + zombie.getPosX() + "," +zombie.getPosY()+" atacó a " + zombie.getObjetivo().getDefensa().getPosX() + "," + zombie.getObjetivo().getDefensa().getPosY()
+                        +" ,tenía " + zombie.getVidaInicialObjetivo() + " de vida y termino en 0 de vida" );
                         zombie.getObjetivo().getDefensa().morir();
+                        //se ocupa obtener el ataque en curso del objetivo en caso que lo tenga, baby girl si yo te quiero
                         zombie.getObjetivo().isRunning = false;
                         //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
                         ventana.cambiarImagenDeLabel("imgs//ruinas.png",zombie.getObjetivo().getDefensa().getLabel());

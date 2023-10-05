@@ -14,12 +14,42 @@ public class Zombie extends Personaje{
     int velocidad;
     private JLabel label;
     ThreadDefensa objetivo;
+    private int vidaInicialObjetivo,vidaFinalObjetivo;
+    boolean isAttacking;
     
 
     public Zombie(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
         super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
         this.velocidad = velocidad;
         this.label = label;
+        this.vidaInicialObjetivo = 0;
+        this.vidaFinalObjetivo = 0;
+        isAttacking = false;
+    }
+
+    public boolean isIsAttacking() {
+        return isAttacking;
+    }
+
+    public void setIsAttacking(boolean isAttacking) {
+        this.isAttacking = isAttacking;
+    }
+    
+    
+    public int getVidaInicialObjetivo() {
+        return vidaInicialObjetivo;
+    }
+
+    public void setVidaInicialObjetivo(int vidaInicialObjetivo) {
+        this.vidaInicialObjetivo = vidaInicialObjetivo;
+    }
+
+    public int getVidaFinalObjetivo() {
+        return vidaFinalObjetivo;
+    }
+
+    public void setVidaFinalObjetivo(int vidaFinalObjetivo) {
+        this.vidaFinalObjetivo = vidaFinalObjetivo;
     }
 
     public JLabel getLabel() {
