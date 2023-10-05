@@ -49,18 +49,7 @@ public class Defensa extends Personaje{
         } 
         return null;
     }
-    public ArbolDeVida getCloserZombie(ArbolDeVida arbol){
-        for (int i = 1; i <= this.getAlcance(); i++) {
-            ArrayList<Point> puntos = setPossibleMoves(i);
-            for (int j = 0; j < puntos.size(); j++) {
-                Point punto = puntos.get(j);
-                if (punto.x == arbol.getPosX() && punto.y == arbol.getPosY())
-                    return arbol;
-            }
-        } 
-        return null;
-    }
-    
+
     public void atacarZombie(){
         this.getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
     }

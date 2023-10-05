@@ -13,7 +13,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
     ArrayList<ThreadZombie> zombies;
     ArrayList<ThreadDefensa> defensas;
-    ArbolDeVida arbolDeVida;
+    ThreadDefensa tav;
     JLabel[][] matriz = new JLabel[25][25];
     
     
@@ -22,21 +22,24 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         defensas = new ArrayList<ThreadDefensa>();
         initComponents();
         generaMatriz();
+        pintarZonaSegura();
         cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida);
-        //arbolDeVida = new ArbolDeVida(new JLabel(),"arbol", "", 0, 1, 1, 1, 0, 100, 0, 0);
-        arbolDeVida = new ArbolDeVida(new JLabel(), "arbol", "", 0, 0, 1, 1, 0, 100, -1, -1);
+        Defensa arbolVida = new Defensa(new JLabel(),"arbol", "", 0, 1, 1, 0, 0, 100, 0, 0);
+        tav = new ThreadDefensa(arbolVida, this);
         this.nivel = 0;
+        btnIniciarGuerra.setEnabled(false);
         
     }
     
     public void generarZombies(int size){
         for (int i = 0; i < size; i++) {
             //crea el label
-            
             JLabel label =  new JLabel(""+i);
             label.setSize(25,25);
-            label.setBackground(Color.BLUE);
+            label.setBackground(Color.WHITE);
+            label.setOpaque(true);
             setAparicion(label);
+//            label.setLayout(getLayout());
             // crear el zombie aleatoriamente, del tipo que corresponda
             Zombie zombie = new Zombie(label, "alfredito", "contacto", 3, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
             zombie.setLabel(label);
@@ -45,8 +48,21 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             ThreadZombie tz =  new ThreadZombie(zombie, this);
             zombies.add(tz);
             pnlCampoJuego.add(label);
+//            JLayeredPane layeredPane = new JLayeredPane();
+//            pnlCampoJuego.add(layeredPane);
+//            layeredPane.add(label, JLayeredPane.DEFAULT_LAYER);
             //cambiarImagen("imgs//zombie1.png", label);
         } 
+    }
+    
+    public void pintarZonaSegura(){
+        for (int i = 4; i < 21; i++) 
+            for (int j = 4; j < 21; j++){
+                if(j%2 == 0)
+                    matriz[i][j].setBackground(new Color(105, 255, 102));
+                else
+                    matriz[i][j].setBackground(new Color(153, 255, 152));
+            }
     }
     
     private static ImageIcon resizeGifIcon(ImageIcon originalIcon, int width, int height) {
@@ -61,6 +77,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             posX = 0;
             for (int j = 0; j < 25; j++){
                 matriz[i][j] = new JLabel("");
+                //matriz[i][j].setOpaque(true);
+                matriz[i][j].setLayout(null);
                 matriz[i][j].setSize(25,25);
                 matriz[i][j].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
                 pnlCampoJuego.add(matriz[i][j]);
@@ -71,10 +89,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
 
-    public ArbolDeVida getArbolDeVida() {
-        return arbolDeVida;
-    }
-    
     public void setAparicion(JLabel label){
         int colOrRow = (new Random()).nextInt(2);//0: col  1: filas
         int dir = (new Random()).nextInt(2);//0: primera  1: segunda
@@ -100,6 +114,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         GridBagLayout layout = new GridBagLayout();
         label.setLayout(layout);
         
+        
+    }
+
+    public ThreadDefensa getTav() {
+        return tav;
     }
     
     public void cambiarImagenDeBoton(String ruta,JButton btn){
@@ -136,7 +155,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             if (get.getDefensa().getPosX() == posX && get.getDefensa().getPosY() == posY)
                 return false;
         }
-        if (posX == arbolDeVida.getPosX() && posY == arbolDeVida.getPosY())
+        if(tav.getDefensa().getPosX() == posX && tav.getDefensa().getPosY() == posY)
             return false;
         return true;
     }
@@ -162,22 +181,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         lblPosX = new javax.swing.JLabel();
         lblPosY = new javax.swing.JLabel();
         btnColocarArbolDeVida = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pnlCampoJuego.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pnlCampoJuego.setOpaque(false);
         pnlCampoJuego.setPreferredSize(new java.awt.Dimension(625, 625));
-
-        javax.swing.GroupLayout pnlCampoJuegoLayout = new javax.swing.GroupLayout(pnlCampoJuego);
-        pnlCampoJuego.setLayout(pnlCampoJuegoLayout);
-        pnlCampoJuegoLayout.setHorizontalGroup(
-            pnlCampoJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 623, Short.MAX_VALUE)
-        );
-        pnlCampoJuegoLayout.setVerticalGroup(
-            pnlCampoJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 623, Short.MAX_VALUE)
-        );
+        pnlCampoJuego.setLayout(null);
 
         btnIniciarGuerra.setText("Iniciar");
         btnIniciarGuerra.addActionListener(new java.awt.event.ActionListener() {
@@ -211,6 +222,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setBackground(new java.awt.Color(153, 255, 153));
+        jLabel1.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,20 +232,25 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnColocarDefensa)
-                            .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                            .addComponent(txfPosY)))
-                    .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnColocarDefensa)
+                                    .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                                    .addComponent(txfPosY)))
+                            .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
+                        .addComponent(jLabel1)))
                 .addContainerGap(163, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -241,7 +260,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(184, 184, 184)
+                        .addGap(78, 78, 78)
+                        .addComponent(jLabel1)
+                        .addGap(90, 90, 90)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -318,21 +339,24 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    arbolDeVida.setPosX(posX);
-                    arbolDeVida.setPosY(posY);
+                    tav.getDefensa().setPosX(posX);
+                    tav.getDefensa().setPosY(posY);
                     System.out.println(posX + ", " + posY);
-                    JLabel label = new JLabel(arbolDeVida.getNivel()+ "");
+                    JLabel label = new JLabel(tav.getDefensa().getNivel()+ "");
                     label.setSize(25,25);
                     label.setBackground(Color.BLUE);
                     label.setLocation(posX*25, posY*25);
                     label.setVisible(true); 
+                    label.setText(tav.getDefensa().getVida()+"");
 
 
-                    arbolDeVida.setLabel(label);
+                    tav.getDefensa().setLabel(label);
                     pnlCampoJuego.add(label);
-                    label.setText(arbolDeVida.getVida()+"");
+                    label.setText(tav.getDefensa().getVida()+"");
                     cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida); 
-                    cambiarImagenDeLabel("imgs//arbolDeLaVida.png", label);
+                    defensas.add(tav);
+                    //cambiarImagenDeLabel("imgs//arbolDeLaVida.png", label);
+                    btnIniciarGuerra.setEnabled(true);
                 }else
                     JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
             }else
@@ -354,6 +378,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private javax.swing.JButton btnColocarArbolDeVida;
     private javax.swing.JButton btnColocarDefensa;
     private javax.swing.JButton btnIniciarGuerra;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblPosX;
     private javax.swing.JLabel lblPosY;
     private javax.swing.JPanel pnlCampoJuego;

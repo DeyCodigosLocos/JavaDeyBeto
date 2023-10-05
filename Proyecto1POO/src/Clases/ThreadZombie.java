@@ -24,7 +24,7 @@ public class ThreadZombie extends Thread{
     @Override
     public void run() {
         while(isRunning){
-            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),ventana.getArbolDeVida().getPosX(), ventana.getArbolDeVida().getPosY());
+            ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
             try {
                 
                 if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
@@ -86,10 +86,5 @@ public class ThreadZombie extends Thread{
     @Override
     public String toString() {
         return "ThreadZombie{" + "zombie=" + zombie + '}';
-    }
-    
-    
-    
-    
-    
+    } 
 }

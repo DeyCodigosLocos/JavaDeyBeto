@@ -60,9 +60,6 @@ public class Zombie extends Personaje{
     public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas){
         for (int i = 1; i <= this.getAlcance(); i++) {
             ArrayList<Point> puntos = setPossibleMoves(i);
-            //System.out.println("PUNTOS POSIBLES: ");
-            printPoints(puntos);
-            //System.out.println("");
             for (int j = 0; j < puntos.size(); j++){
                 for (int k = 0; k < defensas.size(); k++){
                     ThreadDefensa defensa = defensas.get(k);
