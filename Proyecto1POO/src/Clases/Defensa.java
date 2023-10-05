@@ -37,9 +37,6 @@ public class Defensa extends Personaje{
     public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies){
         for (int i = 1; i <= this.getAlcance(); i++) {
             ArrayList<Point> puntos = setPossibleMoves(i);
-            //System.out.println("PUNTOS POSIBLES: ");
-            printPoints(puntos);
-            //System.out.println("");
             for (int j = 0; j < puntos.size(); j++) {
                 for (int k = 0; k < zombies.size(); k++) {
                     ThreadZombie zombie = zombies.get(k);
@@ -48,6 +45,17 @@ public class Defensa extends Personaje{
                     if(zombie.getZombie().getPosX() == puntos.get(j).x && zombie.getZombie().getPosY() == puntos.get(j).y)
                         return zombie;
                 }
+            }
+        } 
+        return null;
+    }
+    public ArbolDeVida getCloserZombie(ArbolDeVida arbol){
+        for (int i = 1; i <= this.getAlcance(); i++) {
+            ArrayList<Point> puntos = setPossibleMoves(i);
+            for (int j = 0; j < puntos.size(); j++) {
+                Point punto = puntos.get(j);
+                if (punto.x == arbol.getPosX() && punto.y == arbol.getPosY())
+                    return arbol;
             }
         } 
         return null;
