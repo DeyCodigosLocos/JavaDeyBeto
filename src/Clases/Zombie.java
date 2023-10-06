@@ -88,15 +88,14 @@ public class Zombie extends Personaje{
     }
     
     public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas){
-        for (int i = 1; i <= this.getAlcance(); i++) {
-            ArrayList<Point> puntos = setPossibleMoves(i);
-            for (int j = 0; j < puntos.size(); j++){
-                for (int k = 0; k < defensas.size(); k++){
-                    ThreadDefensa defensa = defensas.get(k);
-                    if(defensa.getDefensa().getPosX() == puntos.get(j).x && defensa.getDefensa().getPosY() == puntos.get(j).y)
-                        return defensa;
-                }
-            }
+        ArrayList<Point> esquinas = this.getEsquinas();
+        Point punto1 = esquinas.get(0);
+        Point punto2 = esquinas.get(1);
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa defensa = defensas.get(i);
+            if (punto1.x<= defensa.getDefensa().getPosX() && punto2.x >= defensa.getDefensa().getPosX())
+                if(punto1.y<= defensa.getDefensa().getPosY() && punto2.y >= defensa.getDefensa().getPosY())
+                    return defensa;
         }
         return null;
     }

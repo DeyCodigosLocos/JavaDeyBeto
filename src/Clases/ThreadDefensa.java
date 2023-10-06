@@ -33,10 +33,8 @@ public class ThreadDefensa extends Thread{
                     if(defensa.getObjetivo().getZombie().isDead()){
                         defensa.getObjetivo().getZombie().morir();
                         defensa.getObjetivo().isRunning = false;
-                        //System.out.println(defensa.getObjetivo().getZombie().getPosX() + ", "+ defensa.getObjetivo().getZombie().getPosY());
                         ventana.cambiarImagenDeLabel("imgs//zombieMuerto.png",defensa.getObjetivo().getZombie().getLabel());
                     }
-                        
                 }
                 sleep(1000);
             } catch (InterruptedException ex) {

@@ -45,19 +45,16 @@ public class Defensa extends Personaje{
         return isAttacking;
     }
     
-    
-    
     public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies){
-        for (int i = 1; i <= this.getAlcance(); i++) {
-            ArrayList<Point> puntos = setPossibleMoves(i);
-            for (int j = 0; j < puntos.size(); j++) {
-                for (int k = 0; k < zombies.size(); k++) {
-                    ThreadZombie zombie = zombies.get(k);
-                    if(zombie.getZombie().getPosX() == puntos.get(j).x && zombie.getZombie().getPosY() == puntos.get(j).y)
-                        return zombie;
-                }
-            }
-        } 
+        ArrayList<Point> esquinas = this.getEsquinas();
+        Point punto1 = esquinas.get(0);
+        Point punto2 = esquinas.get(1);
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie zombie = zombies.get(i);
+            if (punto1.x<= zombie.getZombie().getPosX() && punto2.x >= zombie.getZombie().getPosX())
+                if(punto1.y<= zombie.getZombie().getPosY() && punto2.y >= zombie.getZombie().getPosY())
+                    return zombie;
+        }
         return null;
     }
 

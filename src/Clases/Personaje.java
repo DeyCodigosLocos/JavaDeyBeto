@@ -136,7 +136,7 @@ public class Personaje {
     public void printPoints(ArrayList<Point> puntos){
         for (int i = 0; i < puntos.size(); i++) {
             Point get = puntos.get(i);
-            //System.out.println(get.x + ", "+get.y);
+            System.out.println(get.x + ", "+get.y);
         }
     }
     
