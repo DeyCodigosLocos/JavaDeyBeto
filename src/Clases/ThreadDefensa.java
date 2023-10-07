@@ -28,6 +28,8 @@ public class ThreadDefensa extends Thread{
                     //System.out.println("entro al if 1");
                     defensa.setObjetivo(defensa.getCloserZombie(ventana.getZombies()));
                 }else{
+                    defensa.getAtaques().add("Zombie " + defensa.getPosX() + "," + defensa.getPosY() + " ataco a defensa " + 
+                    defensa.getObjetivo().getZombie().getPosX() + "," +  defensa.getObjetivo().getZombie().getPosY() + ", estaba a " +defensa.getObjetivo().getZombie().getVida() + " y lo dejo a " + (defensa.getObjetivo().getZombie().getVida()- defensa.getDanoPorSegundo())+ "\n");
                     defensa.atacarZombie();
                     defensa.getObjetivo().getZombie().getLabel().setText(defensa.getObjetivo().getZombie().getVida()+"");
                     if(defensa.getObjetivo().getZombie().isDead()){

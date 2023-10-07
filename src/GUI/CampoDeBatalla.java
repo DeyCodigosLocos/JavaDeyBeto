@@ -17,6 +17,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     ArrayList<ThreadDefensa> defensas;
     ThreadDefensa tav;
     JLabel[][] matriz = new JLabel[25][25];
+    ThreadInGame tIG;
     
     
     public CampoDeBatalla() {
@@ -27,10 +28,10 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         pintarZonaSegura();
         cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida);
         Defensa arbolVida = new Defensa(new JLabel(),"arbol", "", 0, 1, 1, 0, 0, 100, 0, 0);
-        tav = new ThreadDefensa(arbolVida, this);
+        this.tav = new ThreadDefensa(arbolVida, this);
+        this.tIG = new ThreadInGame(this);
         this.nivel = 0;
         btnIniciarGuerra.setEnabled(false);
-        
     }
     
     public void generarZombies(int size){
@@ -185,6 +186,42 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
+    public boolean allZombiesDead(){
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie zombie = zombies.get(i);
+            if(zombie.getZombie().getVida() > 0)
+                return false;
+        }
+        return true;
+    }
+    
+    public boolean allDefensesDead(){
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa defensa = defensas.get(i);
+            if(defensa.getDefensa().getVida() > 0)
+                return false;
+        }
+        return true;
+    }
+    
+    
+    public void pararThreads(){
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie zombie = zombies.get(i);
+            pnlCampoJuego.remove(zombie.getZombie().getLabel());
+            pnlCampoJuego.revalidate();
+            pnlCampoJuego.repaint();
+            zombie.setIsRunning(false);
+        }
+        
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa defensa = defensas.get(i);
+            pnlCampoJuego.remove(defensa.getDefensa().getLabel());
+            pnlCampoJuego.revalidate();
+            pnlCampoJuego.repaint();
+            defensa.setIsRunning(false);
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -265,30 +302,27 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
+                                .addGap(29, 29, 29)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnColocarDefensa)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(29, 29, 29)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnColocarDefensa)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                                                    .addComponent(txfPosY)))))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(126, 126, 126)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(65, 65, 65))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                                            .addComponent(txfPosY)))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
+                        .addComponent(jLabel1)))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -333,6 +367,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             ThreadDefensa get = defensas.get(i);
             get.start();
         }
+        tIG.start();
         btnIniciarGuerra.setEnabled(false);
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
 
@@ -435,19 +470,19 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public void imprimirActividadDefensa(ThreadDefensa defensa){
         for (int i = 0; i < defensa.getDefensa().getAtaques().size(); i++) {
             txaRegistroDeActividad.append(defensa.getDefensa().getAtaques().get(i)+"\n");
-            System.out.println(defensa.getDefensa().getAtaques().get(i)+"\n");
+            //System.out.println(defensa.getDefensa().getAtaques().get(i)+"\n");
         }
     }
     
     public void imprimirActividadZombie(ThreadZombie zombie){
         for (int i = 0; i < zombie.getZombie().getAtaques().size(); i++) {
             txaRegistroDeActividad.append(zombie.getZombie().getAtaques().get(i)+"\n");
-            System.out.println(zombie.getZombie().getAtaques().get(i)+"\n");
+            //System.out.println(zombie.getZombie().getAtaques().get(i)+"\n");
         }
     }
     
     public void quitarActividad(){
-        txaRegistroDeActividad.removeAll();
+        txaRegistroDeActividad.setText("");
     }
     
     

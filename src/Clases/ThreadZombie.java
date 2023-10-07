@@ -27,9 +27,7 @@ public class ThreadZombie extends Thread{
             ArrayList<Point> puntos = zombie.sortPossibleMoves(zombie.setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
             try {
                 if (zombie.getObjetivo() == null || zombie.getObjetivo().getDefensa().isDead()){
-                    
                     zombie.setObjetivo(zombie.getCloserDefense(ventana.getDefensas()));
-                    
                     if(zombie.getObjetivo() == null){
                         for (int i = 0; i < puntos.size(); i++) {
                             Point get = puntos.get(i);
@@ -41,6 +39,8 @@ public class ThreadZombie extends Thread{
                         }
                     }
                 }else{
+                    zombie.getAtaques().add("Zombie " + zombie.getPosX() + "," + zombie.getPosY() + " ataco a defensa " + 
+                    zombie.getObjetivo().getDefensa().getPosX() + "," +  zombie.getObjetivo().getDefensa().getPosY() + ", estaba a " +zombie.getObjetivo().getDefensa().getVida() + " y lo dejo a " + (zombie.getObjetivo().getDefensa().getVida()- zombie.getDanoPorSegundo())+ "\n" );
                     zombie.atacarDefensa();
                     zombie.getObjetivo().getDefensa().getLabel().setText(zombie.getObjetivo().getDefensa().getVida()+"");
                     if(zombie.getObjetivo().getDefensa().isDead()){
