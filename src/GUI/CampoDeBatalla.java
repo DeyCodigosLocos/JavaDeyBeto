@@ -1,5 +1,6 @@
 package GUI;
 
+import TiposDefensas.DefensaAerea;
 import Clases.*;
 import Clases.Zombie;
 import javax.swing.*;
@@ -10,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+
+import TiposDefensas.*;
 
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
@@ -44,30 +47,31 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             
 //            label.setLayout(getLayout());
             // crear el zombie aleatoriamente, del tipo que corresponda
-            Zombie zombie = new Zombie(label, "alfredito", "contacto", 3, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
+            Zombie zombie = new Zombie(label, "alfredito", "", 3, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
+            zombie.tipoZombieRand();
             zombie.setLabel(label);
-            label.setText(zombie.getVida()+"");
+            label.setText(zombie.getTipo()+"");
             // Crear el thread
             ThreadZombie tz =  new ThreadZombie(zombie, this);
             zombies.add(tz);
             label.addMouseListener(new MouseAdapter() {
-                                @Override
-                             public void mouseEntered(MouseEvent e) {
-                                 imprimirActividadZombie(tz);
-                                 label.setForeground(Color.RED);
-                             }
+                        @Override
+                     public void mouseEntered(MouseEvent e) {
+                         imprimirActividadZombie(tz);
+                         label.setForeground(Color.RED);
+                     }
 
-                                @Override
-                             public void mouseExited(MouseEvent e) {
-                                 quitarActividad();
-                                 label.setForeground(Color.BLACK);
-                             }
-                    });
+                        @Override
+                     public void mouseExited(MouseEvent e) {
+                         quitarActividad();
+                         label.setForeground(Color.BLACK);
+                     }
+            });
             pnlCampoJuego.add(label);
 //            JLayeredPane layeredPane = new JLayeredPane();
 //            pnlCampoJuego.add(layeredPane);
 //            layeredPane.add(label, JLayeredPane.DEFAULT_LAYER);
-            //cambiarImagen("imgs//zombie1.png", label);
+//            cambiarImagen("imgs//zombie1.png", label);
         } 
     }
     
@@ -343,7 +347,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    Defensa defensa = new Defensa(new JLabel(), "Fortin", "contacto", 2, 1, 1, 1, 2, 10, posX, posY);
+                    DefensaAerea defensa = new DefensaAerea(new JLabel(), "Fortin", "AEREO", 2, 1, 1, 1, 2, 1000, posX, posY);
                     System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);

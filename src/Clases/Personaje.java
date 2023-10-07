@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import java.util.Iterator;
 import static java.util.Spliterators.iterator;
 
+
+
 public class Personaje {
     private String nombre,tipo;
     private int alcance,nivel,nivelAparicion,espacios,danoPorSegundo,vida,posX,posY;
@@ -119,11 +121,11 @@ public class Personaje {
     
     
     
-    public boolean isTraslape(Point punto,ArrayList<ThreadZombie> zombies,ArrayList<ThreadDefensa> defensas ){
+    public boolean isTraslape(Point punto, ArrayList<ThreadZombie> zombies, ArrayList<ThreadDefensa> defensas){
         for (int i = 0; i < defensas.size(); i++) {
             ThreadDefensa defensa = defensas.get(i);
             if(defensa.getDefensa().getPosX() == punto.x && defensa.getDefensa().getPosY() == punto.y)
-                return true;  
+                return true;
         }
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie zombie = zombies.get(i);
@@ -184,6 +186,26 @@ public class Personaje {
     
     public boolean isDead(){
         return this.getVida() <= 0;
+    }
+    
+    public double getDistance(int x1, int y1, int x2, int y2){
+        return Math.sqrt(Math.pow((x1-x2),2)+Math.pow((y1-y2),2));
+    }
+      
+    public ArrayList<Point> sortPossibleMoves(ArrayList<Point> array, int objX, int objY){
+        if (!array.isEmpty()){
+             for (int i = 0; i < array.size()-1; i++) {
+                for (int j = 0; j < array.size() - 1; j++) {
+                    if (getDistance(array.get(j).x,array.get(j).y,objX,objY) < getDistance(array.get(j+1).x,array.get(j+1).y,objX,objY)){
+                        Point p1 = new Point(array.get(j));
+                        Point p2 = new Point(array.get(j+1));
+                        array.set(j, p2);
+                        array.set(j+1, p1);
+                    }
+                }
+            }
+        }
+        return array;
     }
     
     public void morir(){
