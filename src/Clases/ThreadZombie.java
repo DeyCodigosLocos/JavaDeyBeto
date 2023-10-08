@@ -27,19 +27,19 @@ public class ThreadZombie extends Thread{
         while(isRunning){
             try {
                 switch (zombie.getTipo()) {
-                    case "AEREO" -> {
+                    case "AEREO": 
                         ZombieVolador zomVolador = (ZombieVolador)zombie;
                         zomVolador.ataque(ventana);
-                    }
-                    case "CHOQUE" -> {
+                        break;
+                    case "CHOQUE": 
                         ZombieChoque zomChoque = (ZombieChoque)zombie;
                         zomChoque.ataque(ventana);
                         if(zomChoque.isDead())
                             setIsRunning(false);
-                    }
-                    default -> {
+                        break;
+                    default:
                         zombie.ataque(ventana);
-                    }
+                    
                 }
                 sleep(((new Random()).nextInt(3-1)+1)*1000);
                 //ventana.imprimirActividad();

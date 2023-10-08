@@ -25,25 +25,25 @@ public class ThreadDefensa extends Thread{
         while(isRunning){
             try {
                 switch (defensa.getTipo()) {
-                    case "AEREO" -> {
+                    case "AEREO":
                         DefensaAerea defAereo = (DefensaAerea)defensa;
                         defAereo.ataque(ventana);
-                    }
-                    case "IMPACTO" -> {
+                        break;
+                    case "IMPACTO":
                         DefensaImpacto defImpac = (DefensaImpacto)defensa;
                         defImpac.ataque(ventana);
                         if(defImpac.isDead())
                             setIsRunning(false);
-                    }
-                    case "MULTIPLE" -> {
+                        break;
+                    case "MULTIPLE":
                         DefensaAtaqueMultiple defAtaqueMulti = (DefensaAtaqueMultiple)defensa;
-                        for (int i = 0; i < defAtaqueMulti.getRepeticiones(); i++) {
+                        for (int i = 0; i < defAtaqueMulti.getRepeticiones(); i++){
                             defAtaqueMulti.ataque(ventana);
                         }
-                    }
-                    default -> {
+                        break;
+                    default:
                         defensa.ataque(ventana);
-                    }
+                    
                 }
                 
                 sleep(1000);
