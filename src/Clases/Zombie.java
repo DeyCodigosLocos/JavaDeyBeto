@@ -1,15 +1,17 @@
 package Clases;
 
+import GUI.CampoDeBatalla;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import java.util.Random;
 
-/**
- *
- * @author X
- */
+enum tipos{
+        CONTACTO, AEREO, M_ALCANCE, CHOQUE;
+}
+
 public class Zombie extends Personaje{
     int velocidad;
     private JLabel label;
@@ -17,7 +19,6 @@ public class Zombie extends Personaje{
     private int vidaInicialObjetivo,vidaFinalObjetivo;
     boolean isAttacking;
     
-
     public Zombie(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
         super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
         this.velocidad = velocidad;
@@ -27,6 +28,16 @@ public class Zombie extends Personaje{
         isAttacking = false;
     }
 
+    public void tipoZombieRand() {
+        tipo[] valores = tipo.values();
+        Random rand = new Random();
+        this.setTipo(valores[rand.nextInt(valores.length)].name());
+    }
+    
+    public void setStatsByType(){
+        
+    }
+    
     public boolean isIsAttacking() {
         return isAttacking;
     }
@@ -68,40 +79,42 @@ public class Zombie extends Personaje{
         this.objetivo = objetivo;
     }
     
-    public double getDistance(int x1, int y1, int x2, int y2){
-        return Math.sqrt(Math.pow((x1-x2),2)+Math.pow((y1-y2),2));
-    }
-    public ArrayList<Point> sortPossibleMoves(ArrayList<Point> array, int objX, int objY){
-        if (!array.isEmpty()){
-             for (int i = 0; i < array.size()-1; i++) {
-                for (int j = 0; j < array.size() - 1; j++) {
-                    if (getDistance(array.get(j).x,array.get(j).y,objX,objY) < getDistance(array.get(j+1).x,array.get(j+1).y,objX,objY)){
-                        Point p1 = new Point(array.get(j));
-                        Point p2 = new Point(array.get(j+1));
-                        array.set(j, p2);
-                        array.set(j+1, p1);
-                    }
-                }
-            }
-        }
-        return array;
-    }
-    
     public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas){
         ArrayList<Point> esquinas = this.getEsquinas();
         Point punto1 = esquinas.get(0);
         Point punto2 = esquinas.get(1);
         for (int i = 0; i < defensas.size(); i++) {
             ThreadDefensa defensa = defensas.get(i);
-            if (punto1.x<= defensa.getDefensa().getPosX() && punto2.x >= defensa.getDefensa().getPosX())
+            if (punto1.x<= defensa.getDefensa().getPosX() && punto2.x >= defensa.getDefensa().getPosX() && defensa.getDefensa().getTipo() != "AEREO")
                 if(punto1.y<= defensa.getDefensa().getPosY() && punto2.y >= defensa.getDefensa().getPosY())
                     return defensa;
         }
         return null;
     }
     
-    public void atacarDefensa(){
-        this.getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
+    public void ataque(CampoDeBatalla ventana){
+        ArrayList<Point> puntos = sortPossibleMoves(setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
+        if (getObjetivo() == null || getObjetivo().getDefensa().isDead()){
+            setObjetivo(getCloserDefense(ventana.getDefensas()));
+            if(getObjetivo() == null){
+                for (int i = 0; i < puntos.size(); i++) {
+                    Point get = puntos.get(i);
+                    if(!isTraslape(get, ventana.getZombies(), ventana.getDefensas())){
+                        setPosX(get.x);
+                        setPosY(get.y);
+                        ventana.moverLabel(getPosX()*25, getPosY()*25, getLabel());
+                    }
+                }
+            }
+        }else{
+            getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
+            getObjetivo().getDefensa().getLabel().setText(getObjetivo().getDefensa().getVida()+"");
+            if(getObjetivo().getDefensa().isDead()){
+                getObjetivo().getDefensa().morir();
+                getObjetivo().isRunning = false;
+                ventana.cambiarImagenDeLabel("imgs//ruinas.png",getObjetivo().getDefensa().getLabel());
+            }
+        }
     }
 }
             

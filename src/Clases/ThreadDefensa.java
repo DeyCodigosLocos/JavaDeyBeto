@@ -1,6 +1,7 @@
 package Clases;
 
 import GUI.CampoDeBatalla;
+import TiposDefensas.DefensaAerea;
 import static java.lang.Thread.sleep;
 
 /**
@@ -14,35 +15,39 @@ public class ThreadDefensa extends Thread{
     //boolean isPaused = false;
     
     public ThreadDefensa(Defensa defensa, CampoDeBatalla refVentana) {
-        this.defensa = defensa; 
+        this.defensa = defensa;
         this.ventana = refVentana;
     }
+    
+   
     
     @Override
     public void run() {
         while(isRunning){
             try {
-                
-                //System.out.println("entro al try");
-                if (defensa.getObjetivo() == null || defensa.getObjetivo().getZombie().isDead()){
-                    //System.out.println("entro al if 1");
-                    defensa.setObjetivo(defensa.getCloserZombie(ventana.getZombies()));
-                }else{
-                    defensa.getAtaques().add("Zombie " + defensa.getPosX() + "," + defensa.getPosY() + " ataco a defensa " + 
-                    defensa.getObjetivo().getZombie().getPosX() + "," +  defensa.getObjetivo().getZombie().getPosY() + ", estaba a " +defensa.getObjetivo().getZombie().getVida() + " y lo dejo a " + (defensa.getObjetivo().getZombie().getVida()- defensa.getDanoPorSegundo())+ "\n");
-                    defensa.atacarZombie();
-                    defensa.getObjetivo().getZombie().getLabel().setText(defensa.getObjetivo().getZombie().getVida()+"");
-                    if(defensa.getObjetivo().getZombie().isDead()){
-                        defensa.getObjetivo().getZombie().morir();
-                        defensa.getObjetivo().isRunning = false;
-                        ventana.cambiarImagenDeLabel("imgs//zombieMuerto.png",defensa.getObjetivo().getZombie().getLabel());
-                    }
+                switch (defensa.getTipo()) {
+                    case "AEREO":
+                        System.out.println("Entró");
+                        defensa = (DefensaAerea)defensa;
+                        defensa.ataque(ventana);
+                        break;
+                    case "IMPACTO":
+                        System.out.println("Seleccionaste la opción 3");
+                        break;
+
+                    case "MULTIPLE":
+                        System.out.println("Seleccionaste la opción 3");
+                        break;
+                    default:
+
+                        break;
                 }
+
                 sleep(1000);
             } catch (InterruptedException ex) {
-                
+
             }
-            
+
         } 
     }
 

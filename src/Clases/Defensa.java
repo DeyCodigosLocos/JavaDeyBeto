@@ -1,9 +1,15 @@
 package Clases;
 
+import GUI.CampoDeBatalla;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import java.util.Random;
+
+enum tipo{
+    CONTACTO, AEREO, M_ALCANCE, IMPACTO, BLOQUE, MULTIPLE;
+}
 
 public class Defensa extends Personaje{
     private int velocidad;
@@ -20,6 +26,12 @@ public class Defensa extends Personaje{
         this.ataques = new  ArrayList<String>();
     }
 
+    public static tipo tipoDefensaRand() {
+        tipo[] valores = tipo.values();
+        Random rand = new Random();
+        return valores[rand.nextInt(valores.length)];
+    }
+    
     public ArrayList<String> getAtaques() {
         return ataques;
     }
@@ -57,9 +69,20 @@ public class Defensa extends Personaje{
         }
         return null;
     }
-
-    public void atacarZombie(){
-        this.getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
-    }
     
+    
+    
+    public void ataque(CampoDeBatalla ventana){
+        if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
+            setObjetivo(getCloserZombie(ventana.getZombies()));
+        }else{
+            getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
+            getObjetivo().getZombie().getLabel().setText(getObjetivo().getZombie().getVida()+"");
+            if(getObjetivo().getZombie().isDead()){
+                getObjetivo().getZombie().morir();
+                getObjetivo().setIsRunning(false);
+                ventana.cambiarImagenDeLabel("imgs//zombieMuerto.png",getObjetivo().getZombie().getLabel());
+            }
+        }
+    }
 }
