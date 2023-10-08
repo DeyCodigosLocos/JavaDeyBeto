@@ -79,15 +79,15 @@ public class Zombie extends Personaje{
         this.objetivo = objetivo;
     }
     
-    public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas){
-        ArrayList<Point> esquinas = this.getEsquinas();
-        Point punto1 = esquinas.get(0);
-        Point punto2 = esquinas.get(1);
-        for (int i = 0; i < defensas.size(); i++) {
+    public ThreadDefensa getCloserDefense(ArrayList <ThreadDefensa> defensas, boolean flag){ //flag = este zombie es volador
+       for (int i = 0; i < defensas.size(); i++) {
             ThreadDefensa defensa = defensas.get(i);
-            if (punto1.x<= defensa.getDefensa().getPosX() && punto2.x >= defensa.getDefensa().getPosX() && defensa.getDefensa().getTipo() != "AEREO")
-                if(punto1.y<= defensa.getDefensa().getPosY() && punto2.y >= defensa.getDefensa().getPosY())
+            if(inRange(defensa.getDefensa().getPosX(),defensa.getDefensa().getPosY()))
+                if(flag){
                     return defensa;
+                }else
+                    if(!"AEREO".equals(defensa.getDefensa().getTipo()))
+                        return defensa;
         }
         return null;
     }
@@ -95,7 +95,7 @@ public class Zombie extends Personaje{
     public void ataque(CampoDeBatalla ventana){
         ArrayList<Point> puntos = sortPossibleMoves(setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
         if (getObjetivo() == null || getObjetivo().getDefensa().isDead()){
-            setObjetivo(getCloserDefense(ventana.getDefensas()));
+            setObjetivo(getCloserDefense(ventana.getDefensas(), false));
             if(getObjetivo() == null){
                 for (int i = 0; i < puntos.size(); i++) {
                     Point get = puntos.get(i);

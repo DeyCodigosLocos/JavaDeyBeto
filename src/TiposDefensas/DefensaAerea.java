@@ -37,7 +37,7 @@ public class DefensaAerea extends Defensa{
                     ventana.moverLabel(getPosX()*25, getPosY()*25, getLabel());
                 }
             }
-            if (inRange(getObjetivo().getZombie().getPosX(),getObjetivo().getZombie().getPosY() )){
+            if (inRange(getObjetivo().getZombie().getPosX(),getObjetivo().getZombie().getPosY())){
                 getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
                 getObjetivo().getZombie().getLabel().setText(getObjetivo().getZombie().getVida()+"");
                 if(getObjetivo().getZombie().isDead()){
@@ -49,15 +49,7 @@ public class DefensaAerea extends Defensa{
         }
     }
     
-    public boolean inRange(int objX, int objY){
-        ArrayList<Point> esquinas = this.getEsquinas();
-        Point punto1 = esquinas.get(0);
-        Point punto2 = esquinas.get(1);
-        if (punto1.x <= objX && punto2.x >= objX)
-            if(punto1.y<= objY && punto2.y >= objY)
-                  return true;  
-        return false;
-    }
+
     
     
 }

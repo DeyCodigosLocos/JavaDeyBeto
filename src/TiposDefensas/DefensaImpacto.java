@@ -15,7 +15,7 @@ public class DefensaImpacto extends Defensa {
     @Override
     public void ataque(CampoDeBatalla ventana){
         if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
-            setObjetivo(getCloserZombie(ventana.getZombies()));
+            setObjetivo(getCloserZombie(ventana.getZombies(),false));
         }else{
             getObjetivo().getZombie().morir();
             getObjetivo().setIsRunning(false);

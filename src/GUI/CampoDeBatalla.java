@@ -13,6 +13,7 @@ import java.util.Random;
 
 
 import TiposDefensas.*;
+import TiposZombies.*;
 
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
@@ -24,7 +25,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     public CampoDeBatalla() {
         zombies = new ArrayList<ThreadZombie>();
+        
         defensas = new ArrayList<ThreadDefensa>();
+        
         initComponents();
         generaMatriz();
         pintarZonaSegura();
@@ -45,10 +48,25 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.setOpaque(true);
             setAparicion(label);
             
-//            label.setLayout(getLayout());
-            // crear el zombie aleatoriamente, del tipo que corresponda
-            Zombie zombie = new Zombie(label, "alfredito", "", 1, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
-            zombie.tipoZombieRand();
+            int tipoElegido = new Random().nextInt(4);
+            Zombie zombie;
+            switch (tipoElegido) {
+                case 0 -> {
+                    System.out.println("beto playo");
+                    zombie = new ZombieVolador(new JLabel(), "Alfredito", "AEREO", 2, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                }
+                case 1 -> {
+                    zombie = new ZombieChoque(new JLabel(), "Alfredito", "CHOQUE", 1, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                }
+                case 2 -> {
+                    zombie = new Zombie(new JLabel(), "Alfredito", "M_ALCANCE", 3, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                }
+                default -> {
+                    zombie = new Zombie(new JLabel(), "Alfredito", "CONTACTO", 1, 1, 1, 1, 1, 10, label.getLocation().x/25, label.getLocation().y/25);
+                }
+            }
+            //label.setLayout(getLayout());
+            
             zombie.setLabel(label);
             label.setText(zombie.getTipo()+"");
             // Crear el thread
@@ -347,7 +365,28 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    Defensa defensa = new Defensa(new JLabel(), "Fortin", "MULTIPLE", 2, 1, 1, 1, 2, 1000, posX, posY);
+                    String tipoElegido = "AEREO";
+                    Defensa defensa;
+                    switch (tipoElegido) {
+                        case "AEREO" -> {
+                            System.out.println("beto playo");
+                            defensa = new DefensaAerea(new JLabel(), "Fortin", "AEREO", 2, 1, 1, 1, 2, 1000, posX, posY);
+                        }
+                        case "IMPACTO" -> {
+                            defensa = new DefensaImpacto(new JLabel(), "Fortin", "IMPACTO", 2, 1, 1, 1, 2, 1000, posX, posY);
+                        }
+                        case "MULTIPLE" -> {
+                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "MULTIPLE", 2, 1, 1, 1, 2, 1000, posX, posY, 10);
+                        }
+                        case "CONTACTO" -> {
+                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "CONTACTO", 1, 1, 1, 1, 2, 1000, posX, posY, 10);
+                        }case "ALCANCE" -> {
+                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "MULTIPLE", 3, 1, 1, 1, 2, 1000, posX, posY, 10);
+                        }
+                        default -> {
+                            defensa = new Defensa(new JLabel(), "Fortin", "BLOQUE", 0, 1, 1, 1, 0, 1000, posX, posY);
+                        }
+                    }
                     System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);
@@ -453,7 +492,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public void quitarActividad(){
         txaRegistroDeActividad.removeAll();
     }
-    
     
     public static void main(String args[]) {
         

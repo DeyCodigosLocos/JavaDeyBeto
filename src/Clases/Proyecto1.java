@@ -24,7 +24,7 @@ public class Proyecto1 {
           Defensa defensa = new Defensa(label, "amanda", "contacto", 2, 1, 1, 1, 1, 1, 2, 2);
            System.out.println("\nPRUEBA:\n");
           defensa.printPoints(defensa.getEsquinas());
-          System.out.println(defensa.getCloserZombie(zombies).getZombie().getNombre());
+          System.out.println(defensa.getCloserZombie(zombies,false).getZombie().getNombre());
    
     }
 

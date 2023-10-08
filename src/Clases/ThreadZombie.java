@@ -1,6 +1,7 @@
  package Clases;
 
 import GUI.CampoDeBatalla;
+import TiposZombies.*;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,7 +26,21 @@ public class ThreadZombie extends Thread{
     public void run() {
         while(isRunning){
             try {
-                zombie.ataque(ventana);
+                switch (zombie.getTipo()) {
+                    case "AEREO" -> {
+                        ZombieVolador zomVolador = (ZombieVolador)zombie;
+                        zomVolador.ataque(ventana);
+                    }
+                    case "CHOQUE" -> {
+                        ZombieChoque zomChoque = (ZombieChoque)zombie;
+                        zomChoque.ataque(ventana);
+                        if(zomChoque.isDead())
+                            setIsRunning(false);
+                    }
+                    default -> {
+                        zombie.ataque(ventana);
+                    }
+                }
                 sleep(((new Random()).nextInt(3-1)+1)*1000);
                 //ventana.imprimirActividad();
                 System.out.println("\n\n");

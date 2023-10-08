@@ -57,15 +57,15 @@ public class Defensa extends Personaje{
         return isAttacking;
     }
     
-    public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies){
-        ArrayList<Point> esquinas = this.getEsquinas();
-        Point punto1 = esquinas.get(0);
-        Point punto2 = esquinas.get(1);
+    public ThreadZombie getCloserZombie(ArrayList <ThreadZombie> zombies, boolean flag){ //flag = esta defensa es voladora
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie zombie = zombies.get(i);
-            if (punto1.x<= zombie.getZombie().getPosX() && punto2.x >= zombie.getZombie().getPosX())
-                if(punto1.y<= zombie.getZombie().getPosY() && punto2.y >= zombie.getZombie().getPosY())
+            if(inRange(zombie.getZombie().getPosX(),zombie.getZombie().getPosY()))
+                if(flag){
                     return zombie;
+                }else
+                    if(!"AEREO".equals(zombie.getZombie().getTipo()))
+                        return zombie;
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class Defensa extends Personaje{
     
     public void ataque(CampoDeBatalla ventana){
         if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
-            setObjetivo(getCloserZombie(ventana.getZombies()));
+            setObjetivo(getCloserZombie(ventana.getZombies(), false));
         }else{
             getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
             getObjetivo().getZombie().getLabel().setText(getObjetivo().getZombie().getVida()+"");

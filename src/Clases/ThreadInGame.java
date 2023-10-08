@@ -19,6 +19,7 @@ public class ThreadInGame extends Thread {
     public void run() {
         while(isRunnig){
             try {
+                /*
                 if(ventana.allZombiesDead()){
                     System.out.println("TODOS LOS ZOMBIES ESTAN MUERTOS");
                     ventana.pararThreads();
@@ -32,7 +33,7 @@ public class ThreadInGame extends Thread {
                     ventana.getZombies().clear();
                     ventana.getDefensas().clear();
                 }
-                    
+                    */
                 sleep(1000);
             } catch (InterruptedException ex) {
                 

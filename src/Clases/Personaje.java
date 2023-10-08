@@ -119,7 +119,15 @@ public class Personaje {
         this.vida = vida;
     }
     
-    
+    public boolean inRange(int objX, int objY){
+        ArrayList<Point> esquinas = this.getEsquinas();
+        Point punto1 = esquinas.get(0);
+        Point punto2 = esquinas.get(1);
+        if (punto1.x <= objX && punto2.x >= objX)
+            if(punto1.y<= objY && punto2.y >= objY)
+                  return true;  
+        return false;
+    }
     
     public boolean isTraslape(Point punto, ArrayList<ThreadZombie> zombies, ArrayList<ThreadDefensa> defensas){
         for (int i = 0; i < defensas.size(); i++) {
@@ -209,6 +217,7 @@ public class Personaje {
     }
     
     public void morir(){
+        this.vida = 0;
         this.setPosX(-1);
         this.setPosY(-1);
     }
