@@ -60,7 +60,6 @@ public class ThreadZombie extends Thread{
         this.zombie = zombie;
     }
 
-    
     @Override
     public String toString() {
         return "ThreadZombie{" + "zombie=" + zombie + '}';

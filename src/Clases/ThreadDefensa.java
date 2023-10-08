@@ -2,6 +2,8 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import TiposDefensas.DefensaAerea;
+import TiposDefensas.DefensaImpacto;
+
 import static java.lang.Thread.sleep;
 
 /**
@@ -26,21 +28,26 @@ public class ThreadDefensa extends Thread{
         while(isRunning){
             try {
                 switch (defensa.getTipo()) {
-                    case "AEREO":
-                        System.out.println("Entró");
+                    case "AEREO" -> {
                         defensa = (DefensaAerea)defensa;
                         defensa.ataque(ventana);
-                        break;
-                    case "IMPACTO":
-                        System.out.println("Seleccionaste la opción 3");
-                        break;
-                    
-                    case "MULTIPLE":
-                        System.out.println("Seleccionaste la opción 3");
-                        break;
-                    default:
-                       
-                        break;
+                    }
+                    case "IMPACTO" -> {
+                        defensa = (DefensaImpacto)defensa;
+                        defensa.setAlcance(1);
+                        System.out.println("eso tilin");
+                        defensa.ataque(ventana);
+                        if(defensa.isDead())
+                            setIsRunning(false);
+                    }
+                    case "MULTIPLE" -> {
+                        int repeticiones = 10; //se ocupa el atributo o dato que indique el número de ataques por iteración
+                        for (int i = 0; i < repeticiones; i++) {
+                            defensa.ataque(ventana);
+                        }
+                    }
+                    default -> {
+                    }
                 }
                 
                 sleep(1000);

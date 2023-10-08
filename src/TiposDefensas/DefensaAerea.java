@@ -20,9 +20,8 @@ public class DefensaAerea extends Defensa{
     @Override
     public void ataque(CampoDeBatalla ventana){
         
-        System.out.println("beto");
         if(getObjetivo()==null || getObjetivo().getZombie().isDead()){
-            for (ThreadZombie zombie : ventana.getZombies()) {
+            for (ThreadZombie zombie : ventana.getZombies()){
                 if(!(zombie.getZombie().isDead())){
                     setObjetivo(zombie);
                 }

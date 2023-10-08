@@ -47,7 +47,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             
 //            label.setLayout(getLayout());
             // crear el zombie aleatoriamente, del tipo que corresponda
-            Zombie zombie = new Zombie(label, "alfredito", "", 3, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
+            Zombie zombie = new Zombie(label, "alfredito", "", 1, 1, 1, 1, 1, 12, label.getLocation().x/25, label.getLocation().y/25);
             zombie.tipoZombieRand();
             zombie.setLabel(label);
             label.setText(zombie.getTipo()+"");
@@ -347,7 +347,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    DefensaAerea defensa = new DefensaAerea(new JLabel(), "Fortin", "AEREO", 2, 1, 1, 1, 2, 1000, posX, posY);
+                    Defensa defensa = new Defensa(new JLabel(), "Fortin", "MULTIPLE", 2, 1, 1, 1, 2, 1000, posX, posY);
                     System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);
