@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 
 public class ZombieVolador extends Zombie {
     
-    public ZombieVolador(JLabel label, String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
-        super(label, nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
+    public ZombieVolador(String imagen,JLabel label, String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
+        super(imagen,label, nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
     }
     
     @Override

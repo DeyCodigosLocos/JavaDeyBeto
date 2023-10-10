@@ -42,7 +42,7 @@ public class ThreadZombie extends Thread implements Serializable{
                         zombie.ataque(ventana);
                     
                 }
-                sleep(((new Random()).nextInt(3-1)+1)*1000);
+                sleep(1000);
                 //ventana.imprimirActividad();
                 System.out.println("\n\n");
             } catch (InterruptedException ex) {

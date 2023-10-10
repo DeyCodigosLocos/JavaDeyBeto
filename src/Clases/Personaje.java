@@ -9,15 +9,13 @@ import javax.swing.JLabel;
 import java.util.Iterator;
 import static java.util.Spliterators.iterator;
 
-
-
 public class Personaje implements Serializable{
-    private String nombre,tipo;
+    private String nombre,tipo,imagen;
     private int alcance,nivel,nivelAparicion,espacios,danoPorSegundo,vida,posX,posY;
     private boolean activo;
     private ArrayList<String> ataques;
 
-    public Personaje(String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
+    public Personaje(String imagen,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.alcance = alcance;
@@ -28,6 +26,7 @@ public class Personaje implements Serializable{
         this.vida = vida;
         this.posX = posX;
         this.posY = posY;
+        this.imagen = imagen;
         this.activo = true;
         this.ataques = new ArrayList<String>();
     }

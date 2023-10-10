@@ -1,6 +1,12 @@
 package ConfigurarPersonajes;
 
-import Clases.Zombie;
+import Clases.*;
+import TiposDefensas.DefensaAerea;
+import TiposDefensas.DefensaAtaqueMultiple;
+import TiposDefensas.DefensaImpacto;
+import TiposZombies.ZombieChoque;
+import TiposZombies.ZombieVolador;
+import filemanager.FileManager;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -338,9 +344,37 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
             System.out.println("hola");
             if (cmbTipoDePersonaje.getSelectedIndex() == 0){
                 if(cmbTipoDeZombie.getSelectedIndex() == 0){
-                    Zombie zombie = new Zombie(new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }else if(cmbTipoDeZombie.getSelectedIndex() == 1){
-                    System.out.println("asdasdsa");
+                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "M_ALCANCE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
+                }else if(cmbTipoDeZombie.getSelectedIndex() == 2){
+                    Zombie zombie = new ZombieVolador(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "AEREO",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
+                }else {
+                    Zombie zombie = new ZombieChoque(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CHOQUE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
+                }
+            }else{
+                if(cmbTipoDeDefensa.getSelectedIndex() == 0){
+                    Defensa defensa = new Defensa(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
+                }else if(cmbTipoDeDefensa.getSelectedIndex() == 1){
+                    Defensa defensa = new Defensa(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "M_ALCANCE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
+                }else if(cmbTipoDeDefensa.getSelectedIndex() == 2){
+                    Defensa defensa = new DefensaAerea(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "AEREO",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
+                }else if(cmbTipoDeDefensa.getSelectedIndex() == 3){
+                    Defensa defensa = new DefensaImpacto(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "IMPACTO",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
+                }else if(cmbTipoDeDefensa.getSelectedIndex() == 4){
+                    Defensa defensa = new DefensaAtaqueMultiple(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "A_MULTIPLE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0,Integer.parseInt(cantidadAtaques));
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
+                }else {
+                    Defensa defensa = new Defensa(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "BLOQUE",0, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), 0, Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
                 }
             }
         }else

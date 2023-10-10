@@ -19,8 +19,8 @@ public class Defensa extends Personaje implements Serializable{
     private ArrayList<String> ataques;
     boolean isAttacking;
 
-    public Defensa(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
-        super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
+    public Defensa(String imagen,JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
+        super(imagen,nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
         this.velocidad = velocidad;
         this.label = label;
         this.objetivo = null;

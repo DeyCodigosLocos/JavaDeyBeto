@@ -4,11 +4,13 @@ import TiposDefensas.DefensaAerea;
 import Clases.*;
 import TiposDefensas.*;
 import TiposZombies.*;
+import filemanager.FileManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,20 +21,74 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     ArrayList<ThreadDefensa> defensas;
     ThreadDefensa tav;
     JLabel[][] matriz = new JLabel[25][25];
+    ArrayList<Defensa> personajeDefensa;
+    ArrayList<Zombie> personajeZombie;
+    Defensa defensaParaColocar;
+    
     
     
     public CampoDeBatalla() {
         zombies = new ArrayList<ThreadZombie>();
         defensas = new ArrayList<ThreadDefensa>();
+        personajeZombie = new ArrayList<Zombie>();
+        personajeDefensa = new ArrayList<Defensa>();
         initComponents();
         generaMatriz();
         pintarZonaSegura();
         cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida);
-        Defensa arbolVida = new Defensa(new JLabel(),"arbol", "", 0, 1, 1, 0, 0, 100, 0, 0);
+        Defensa arbolVida = new Defensa("imgs//arbolDeLaVida.png",new JLabel(),"arbol", "", 0, 1, 1, 0, 0, 100, 0, 0);
         tav = new ThreadDefensa(arbolVida, this);
         this.nivel = 0;
         btnIniciarGuerra.setEnabled(false);
-        
+        cargarZombies();
+        cargarDefensas();
+        defensaParaColocar = null;
+    }
+    
+    //Funcion que carga todos las defensas que se crearon
+    private void cargarDefensas(){
+        System.out.println("");
+        File carpeta = new File("Defensas");
+        if (carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    if (archivo.isFile()) {
+                        System.out.println(archivo.getName());
+                        Defensa defensa = ((Defensa)FileManager.readObject("Defensas//"+archivo.getName()));
+                        if (defensa == null)
+                            System.out.println("me cago en las defensas");
+                        else
+                            personajeDefensa.add(defensa);
+                    }
+                }
+            }
+        }else{
+            System.out.println("La ruta especificada no es una carpeta.");
+        }
+    }
+    
+    //Funcion que carga todos los zombies que se crearon
+    private void cargarZombies(){
+        System.out.println("");
+        File carpeta = new File("Zombies");
+        if (carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    if (archivo.isFile()) {
+                        System.out.println(archivo.getName());
+                        Zombie zombie = (Zombie)FileManager.readObject("Zombies//" + archivo.getName());
+                        
+                        if (zombie != null)
+                            System.out.println("me cago en los zombies");
+                        personajeZombie.add(zombie);
+                    }
+                }
+            }
+        } else {
+            System.out.println("La ruta especificada no es una carpeta.");
+        }
     }
     
     public void generarZombies(int size){
@@ -43,23 +99,22 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.setBackground(Color.WHITE);
             label.setOpaque(true);
             setAparicion(label);
-            int tipoElegido = new Random().nextInt(4);
-            Zombie zombie;
+            String tipoElegido;
+            Zombie zombie = personajeZombie.get(new Random().nextInt(personajeZombie.size()));
+            tipoElegido = zombie.getTipo();
             switch (tipoElegido) {
-                case 0:
-                    zombie = new ZombieVolador(new JLabel(), "Alfredito", "AEREO", 2, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                case "AEREO":
+                    zombie = new ZombieVolador("hola",new JLabel(), zombie.getNombre(), "AEREO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
-                case 1:
-                    zombie = new ZombieChoque(new JLabel(), "Alfredito", "CHOQUE", 1, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                case "CHOQUE":
+                    zombie = new ZombieChoque("hola",new JLabel(), zombie.getNombre(), "CHOQUE", 1, 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
-                case 2:
-                    zombie = new Zombie(new JLabel(), "Alfredito", "M_ALCANCE", 3, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
+                case "M_ALCANCE":
+                    zombie = new Zombie("hola",new JLabel(), zombie.getNombre(), "M_ALCANCE", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
                 default:
-                    zombie = new Zombie(new JLabel(), "Alfredito", "CONTACTO", 1, 1, 1, 1, 1, 10, label.getLocation().x/25, label.getLocation().y/25);
-                    
+                    zombie = new Zombie("hola",new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
             }
-            
             zombie.setLabel(label);
             label.setText(zombie.getTipo()+"");
             // Crear el thread
@@ -79,7 +134,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                      }
             });
             pnlCampoJuego.add(label);
-        } 
+        }
     }
     
     public void pintarZonaSegura(){
@@ -160,7 +215,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         
     }
     
-    
     public ThreadDefensa getTav() {
         return tav;
     }
@@ -209,6 +263,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         pnlCampoJuego = new javax.swing.JPanel();
         btnIniciarGuerra = new javax.swing.JButton();
         txfPosX = new javax.swing.JTextField();
@@ -217,9 +273,15 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         lblPosX = new javax.swing.JLabel();
         lblPosY = new javax.swing.JLabel();
         btnColocarArbolDeVida = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txaRegistroDeActividad = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList<>();
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -259,19 +321,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setBackground(new java.awt.Color(153, 255, 153));
-        jLabel1.setText("jLabel1");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel1MouseEntered(evt);
-            }
-        });
-
-        txaRegistroDeActividad.setBackground(new java.awt.Color(255, 255, 255));
-        txaRegistroDeActividad.setColumns(20);
-        txaRegistroDeActividad.setForeground(new java.awt.Color(0, 0, 0));
-        txaRegistroDeActividad.setRows(5);
-        jScrollPane1.setViewportView(txaRegistroDeActividad);
+        jScrollPane2.setViewportView(jList2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -280,62 +330,43 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(29, 29, 29)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnColocarDefensa)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(txfPosX, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                                                    .addComponent(txfPosY)))))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(126, 126, 126)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(65, 65, 65))
+                        .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnColocarDefensa)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(78, 78, 78)
-                        .addComponent(jLabel1)
-                        .addGap(90, 90, 90)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(27, 27, 27)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(71, 71, 71)
-                                .addComponent(jScrollPane1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(btnColocarDefensa)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnColocarDefensa)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
@@ -364,29 +395,34 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             int posY = Integer.parseInt(txfPosY.getText());
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    String tipoElegido = "CONTACTO";
+                    String tipoElegido = defensaParaColocar.getTipo();
+                    int repeticiones = 0;
+                    if(tipoElegido == "MULTIPLE"){
+                        DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
+                        repeticiones = defensaMultiple.getRepeticiones();
+                    }
                     Defensa defensa;
                     switch (tipoElegido) {
                         case "AEREO":
-                            defensa = new DefensaAerea(new JLabel(), "Fortin", "AEREO", 2, 1, 1, 1, 2, 1000, posX, posY);
+                            defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                             break;
                         case "IMPACTO":
-                            defensa = new DefensaImpacto(new JLabel(), "Fortin", "IMPACTO", 2, 1, 1, 1, 2, 1000, posX, posY);
+                            defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                             break;
                         case "MULTIPLE":
-                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "MULTIPLE", 2, 1, 1, 1, 2, 1000, posX, posY, 10);
+                            defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
                             break;
                         case "CONTACTO":
-                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "CONTACTO", 1, 1, 1, 1, 2, 1000, posX, posY, 10);
+                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                             break;
                         case "ALCANCE" :
-                            defensa = new DefensaAtaqueMultiple(new JLabel(), "Fortin", "MULTIPLE", 3, 1, 1, 1, 2, 1000, posX, posY, 10);
+                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                             break;
                        default :
-                            defensa = new Defensa(new JLabel(), "Fortin", "BLOQUE", 0, 1, 1, 1, 0, 1000, posX, posY);
+                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
                         
                     }
-                    System.out.println(posX + ", " + posY);
+                    //System.out.println(posX + ", " + posY);
                     JLabel label = new JLabel(defensa.getNivel()+ "");
                     label.setSize(25,25);
                     label.setBackground(Color.BLUE);
@@ -405,9 +441,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                  label.setForeground(Color.BLACK);
                              }
                     });
-
                     defensa.setLabel(label);
-
                     ThreadDefensa td = new ThreadDefensa(defensa, this);
                     defensas.add(td);
                     pnlCampoJuego.add(label);
@@ -442,17 +476,16 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     label.setVisible(true); 
                     label.setText(tav.getDefensa().getVida()+"");
                     label.addMouseListener(new MouseAdapter() {
-                                @Override
-                             public void mouseEntered(MouseEvent e) {
-                                 imprimirActividadDefensa(tav);
-                                 label.setForeground(Color.RED);
-                             }
-
-                                @Override
-                             public void mouseExited(MouseEvent e) {
-                                 quitarActividad();
-                                 label.setForeground(Color.BLACK);
-                             }
+                            @Override
+                            public void mouseEntered(MouseEvent e) {
+                                imprimirActividadDefensa(tav);
+                                label.setForeground(Color.RED);
+                            }
+                            @Override
+                            public void mouseExited(MouseEvent e) {
+                                quitarActividad();
+                                label.setForeground(Color.BLACK);
+                            }
                     });
                     tav.getDefensa().setLabel(label);
                     pnlCampoJuego.add(label);
@@ -468,15 +501,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }else
              JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnColocarArbolDeVidaActionPerformed
-
-    private void jLabel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel1MouseEntered
     
     //Funcion para imprimir la actividad de ataque en un text area
     public void imprimirActividadDefensa(ThreadDefensa defensa){
         for (int i = 0; i < defensa.getDefensa().getAtaques().size(); i++) {
-            txaRegistroDeActividad.append(defensa.getDefensa().getAtaques().get(i)+"\n");
+            //txaRegistroDeActividad.append(defensa.getDefensa().getAtaques().get(i)+"\n");
             System.out.println(defensa.getDefensa().getAtaques().get(i)+"\n");
         }
     }
@@ -484,14 +513,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Funcion para imprimir la actividad de ataque en un text area
     public void imprimirActividadZombie(ThreadZombie zombie){
         for (int i = 0; i < zombie.getZombie().getAtaques().size(); i++) {
-            txaRegistroDeActividad.append(zombie.getZombie().getAtaques().get(i)+"\n");
+            //txaRegistroDeActividad.append(zombie.getZombie().getAtaques().get(i)+"\n");
             System.out.println(zombie.getZombie().getAtaques().get(i)+"\n");
         }
     }
     
     //Quita todo el registro de actividad del text are
     public void quitarActividad(){
-        txaRegistroDeActividad.removeAll();
+        //txaRegistroDeActividad.removeAll();
     }
     
     public static void main(String args[]) {
@@ -506,12 +535,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private javax.swing.JButton btnColocarArbolDeVida;
     private javax.swing.JButton btnColocarDefensa;
     private javax.swing.JButton btnIniciarGuerra;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jList2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblPosX;
     private javax.swing.JLabel lblPosY;
     private javax.swing.JPanel pnlCampoJuego;
-    private javax.swing.JTextArea txaRegistroDeActividad;
     private javax.swing.JTextField txfPosX;
     private javax.swing.JTextField txfPosY;
     // End of variables declaration//GEN-END:variables

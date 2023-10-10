@@ -20,8 +20,8 @@ public class Zombie extends Personaje implements Serializable{
     private int vidaInicialObjetivo,vidaFinalObjetivo;
     boolean isAttacking;
     
-    public Zombie(JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
-        super(nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
+    public Zombie(String imagen,JLabel label,String nombre, String tipo, int alcance, int nivel, int nivelAparicion, int espacios, int danoPorsegundo, int vida, int posX, int posY) {
+        super(imagen,nombre, tipo, alcance, nivel, nivelAparicion, espacios, danoPorsegundo, vida, posX, posY);
         this.velocidad = velocidad;
         this.label = label;
         this.vidaInicialObjetivo = 0;
