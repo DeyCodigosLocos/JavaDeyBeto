@@ -20,12 +20,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     ArrayList<ThreadZombie> zombies;
     ArrayList<ThreadDefensa> defensas;
     ThreadDefensa tav;
+    ThreadInGame tig;
     JLabel[][] matriz = new JLabel[25][25];
     ArrayList<Defensa> personajeDefensa;
     ArrayList<Zombie> personajeZombie;
     Defensa defensaParaColocar;
-    
-    
     
     public CampoDeBatalla() {
         zombies = new ArrayList<ThreadZombie>();
@@ -43,6 +42,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         cargarZombies();
         cargarDefensas();
         defensaParaColocar = null;
+        tig = new ThreadInGame(this);
+        tig.start();
     }
     
     //Funcion que carga todos las defensas que se crearon
@@ -521,6 +522,74 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Quita todo el registro de actividad del text are
     public void quitarActividad(){
         //txaRegistroDeActividad.removeAll();
+    }
+    
+    public void stopThreads(){
+        for (int i = 0; i < zombies.size(); i++) {
+           pnlCampoJuego.remove(zombies.get(i).getZombie().getLabel());
+           pnlCampoJuego.revalidate();
+           pnlCampoJuego.repaint();
+           zombies.get(i).setIsRunning(false);
+        }
+        for (int i = 0; i < defensas.size(); i++) {
+           pnlCampoJuego.remove(defensas.get(i).getDefensa().getLabel());
+           pnlCampoJuego.revalidate();
+           pnlCampoJuego.repaint();
+           zombies.get(i).setIsRunning(false);
+        }
+    }
+    
+    public boolean allZombiesDead(){
+        for (int i = 0; i < zombies.size(); i++) {
+            ThreadZombie get = zombies.get(i);
+            if (!get.getZombie().isDead())
+                return false;
+        }
+        return true;
+    }
+    
+    public void finishLevel(boolean winState){
+        if (winState){
+            JOptionPane.showMessageDialog(null, "Has ganado el nivel, puede continuar con el siguiente.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
+            //refreshLevel(nivel+1);
+        }else{
+            String[] opciones = {"Repetir nivel", "Siguiente nivel"};
+            int seleccion = JOptionPane.showOptionDialog(
+            null,
+            "Ingrese la opcion para continuar",
+            "Nivel perdido",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+            );
+
+            // Verifica la selección del usuario y muestra un mensaje correspondiente
+            switch (seleccion) {
+                case 0 -> {
+                JOptionPane.showMessageDialog(null, "Has seleccionado Repetir", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                refreshLevel(nivel);
+                }
+                case 1 -> {
+                JOptionPane.showMessageDialog(null, "Has seleccionado Siguiente", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                refreshLevel(nivel+1);
+                }
+                default -> // El usuario cerró el cuadro de diálogo
+                    JOptionPane.showMessageDialog(null, "Has cerrado el cuadro de diálogo", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                //acá hay que decidir qué hacer si se toca la x o si se intenta bloquear
+            }
+        }
+    }
+
+    public void setNivel(int nivel) {
+        this.nivel = nivel;
+    }
+
+    public void refreshLevel(int nivel){
+        //se deben actualizar los listbox con los valores disponibles según nivel
+        //
+        this.setNivel(nivel);
     }
     
     public static void main(String args[]) {

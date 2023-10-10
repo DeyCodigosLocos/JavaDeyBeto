@@ -20,21 +20,24 @@ public class ThreadInGame extends Thread implements Serializable {
     public void run() {
         while(isRunnig){
             try {
-                /*
+                
                 if(ventana.allZombiesDead()){
                     System.out.println("TODOS LOS ZOMBIES ESTAN MUERTOS");
-                    ventana.pararThreads();
+                    ventana.stopThreads();
                     ventana.getZombies().clear();
                     ventana.getDefensas().clear();
+                    ventana.finishLevel(true);
                 }
-                    
-                if (ventana.allDefensesDead()){
+                      
+                 if(ventana.getTav().getDefensa().getVida()<=0){
                     System.out.println("TODOS LAS DEFENSAS ESTAN MUERTAS");
-                    ventana.pararThreads();
+                    ventana.stopThreads();
                     ventana.getZombies().clear();
                     ventana.getDefensas().clear();
+                    ventana.finishLevel(false);
                 }
-                    */
+              
+                    
                 sleep(1000);
             } catch (InterruptedException ex) {
                 
