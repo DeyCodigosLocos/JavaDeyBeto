@@ -2,6 +2,7 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import TiposDefensas.*;
+import java.io.Serializable;
 
 import static java.lang.Thread.sleep;
 
@@ -9,7 +10,7 @@ import static java.lang.Thread.sleep;
  *
  * @author X
  */
-public class ThreadDefensa extends Thread{
+public class ThreadDefensa extends Thread implements Serializable{
     CampoDeBatalla ventana;
     boolean isRunning = true;
     Defensa defensa;

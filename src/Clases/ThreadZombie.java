@@ -3,6 +3,7 @@
 import GUI.CampoDeBatalla;
 import TiposZombies.*;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  *
  * @author X
  */
-public class ThreadZombie extends Thread{
+public class ThreadZombie extends Thread implements Serializable{
     CampoDeBatalla ventana;
     private boolean isRunning = true;
     //boolean isAtacking = false;

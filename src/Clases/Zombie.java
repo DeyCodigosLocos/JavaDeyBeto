@@ -2,6 +2,7 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
@@ -12,7 +13,7 @@ enum tipos{
         CONTACTO, AEREO, M_ALCANCE, CHOQUE;
 }
 
-public class Zombie extends Personaje{
+public class Zombie extends Personaje implements Serializable{
     int velocidad;
     private JLabel label;
     ThreadDefensa objetivo;

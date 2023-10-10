@@ -2,7 +2,8 @@ package GUI;
 
 import TiposDefensas.DefensaAerea;
 import Clases.*;
-import Clases.Zombie;
+import TiposDefensas.*;
+import TiposZombies.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,9 +12,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-
-import TiposDefensas.*;
-import TiposZombies.*;
 
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
@@ -25,9 +23,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     public CampoDeBatalla() {
         zombies = new ArrayList<ThreadZombie>();
-        
         defensas = new ArrayList<ThreadDefensa>();
-        
         initComponents();
         generaMatriz();
         pintarZonaSegura();
@@ -47,12 +43,10 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.setBackground(Color.WHITE);
             label.setOpaque(true);
             setAparicion(label);
-            
             int tipoElegido = new Random().nextInt(4);
             Zombie zombie;
             switch (tipoElegido) {
                 case 0:
-                    System.out.println("beto playo");
                     zombie = new ZombieVolador(new JLabel(), "Alfredito", "AEREO", 2, 1, 1, 1, 2, 10, label.getLocation().x/25, label.getLocation().y/25);
                     break;
                 case 1:
@@ -65,7 +59,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     zombie = new Zombie(new JLabel(), "Alfredito", "CONTACTO", 1, 1, 1, 1, 1, 10, label.getLocation().x/25, label.getLocation().y/25);
                     
             }
-            //label.setLayout(getLayout());
             
             zombie.setLabel(label);
             label.setText(zombie.getTipo()+"");
@@ -86,10 +79,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                      }
             });
             pnlCampoJuego.add(label);
-//            JLayeredPane layeredPane = new JLayeredPane();
-//            pnlCampoJuego.add(layeredPane);
-//            layeredPane.add(label, JLayeredPane.DEFAULT_LAYER);
-//            cambiarImagen("imgs//zombie1.png", label);
         } 
     }
     
@@ -103,12 +92,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
     }
     
+    //cambia el tamano de la imagen
     private static ImageIcon resizeGifIcon(ImageIcon originalIcon, int width, int height) {
         Image img = originalIcon.getImage();
         Image resizedImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImg);
     }
     
+    //Genera la matriz del campo de juego
     public void generaMatriz (){
         int posX, posY = 0;
         for (int i = 0; i < 25; i++){
@@ -126,7 +117,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             posY += 25;
         }
     }
-
+    
+    //posiciona aleatoriamente a los zombies
     public void setAparicion(JLabel label){
         int colOrRow = (new Random()).nextInt(2);//0: col  1: filas
         int dir = (new Random()).nextInt(2);//0: primera  1: segunda
@@ -143,6 +135,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }         
     }
     
+    //Cambia la imagen de un JLabel
     public void cambiarImagenDeLabel(String ruta,JLabel label){
         ImageIcon icon = new ImageIcon(ruta);
         icon = resizeGifIcon(icon, 32, 32);
@@ -154,11 +147,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         
         
     }
-
-    public ThreadDefensa getTav() {
-        return tav;
-    }
     
+    //Cambia la imagen de un boton
     public void cambiarImagenDeBoton(String ruta,JButton btn){
         ImageIcon icon = new ImageIcon(ruta);
         icon = resizeGifIcon(icon, 85, 85);
@@ -170,10 +160,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         
     }
     
-    public void moverLabel(int posX,int posY,JLabel label){
-        label.setLocation(posX, posY);
+    
+    public ThreadDefensa getTav() {
+        return tav;
     }
-
+    
     public ArrayList<ThreadZombie> getZombies() {
         return zombies;
     }
@@ -182,6 +173,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return defensas;
     }
     
+    //Mueve un label a la posicion deseada
+    public void moverLabel(int posX,int posY,JLabel label){
+        label.setLocation(posX, posY);
+    }
+    
+    //Revisa si la posX y posY, ya esta ocupada por algun personaje
     private boolean checkPosition(int posX,int posY){
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
@@ -198,6 +195,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return true;
     }
     
+    //Retorna true si el dato ingresado es un entero
     private boolean isInt(String dato){
         try {
             Integer.parseInt(dato);
@@ -345,6 +343,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Boton para iniciar la guerra
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
         generarZombies(nivel*5+20);
         for (int i = 0; i < zombies.size(); i++) {
@@ -357,19 +356,18 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
         btnIniciarGuerra.setEnabled(false);
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
-
+    
+    //Boton para colocar una defensa en el campo de juego
     private void btnColocarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarDefensaActionPerformed
         if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
             int posX = Integer.parseInt(txfPosX.getText());
             int posY = Integer.parseInt(txfPosY.getText());
-
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
-                    String tipoElegido = "AEREO";
+                    String tipoElegido = "CONTACTO";
                     Defensa defensa;
                     switch (tipoElegido) {
                         case "AEREO":
-                            System.out.println("beto playo");
                             defensa = new DefensaAerea(new JLabel(), "Fortin", "AEREO", 2, 1, 1, 1, 2, 1000, posX, posY);
                             break;
                         case "IMPACTO":
@@ -426,12 +424,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private void txfPosYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosYActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txfPosYActionPerformed
-
+    
+    //Boton para colocar el arbol de la vida
     private void btnColocarArbolDeVidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarArbolDeVidaActionPerformed
         if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
             int posX = Integer.parseInt(txfPosX.getText());
             int posY = Integer.parseInt(txfPosY.getText());
-            
             if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                 if(checkPosition(posX, posY)){
                     tav.getDefensa().setPosX(posX);
@@ -456,7 +454,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                  label.setForeground(Color.BLACK);
                              }
                     });
-
                     tav.getDefensa().setLabel(label);
                     pnlCampoJuego.add(label);
                     label.setText(tav.getDefensa().getVida()+"");
@@ -475,7 +472,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private void jLabel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseEntered
         // TODO add your handling code here:
     }//GEN-LAST:event_jLabel1MouseEntered
-   
+    
+    //Funcion para imprimir la actividad de ataque en un text area
     public void imprimirActividadDefensa(ThreadDefensa defensa){
         for (int i = 0; i < defensa.getDefensa().getAtaques().size(); i++) {
             txaRegistroDeActividad.append(defensa.getDefensa().getAtaques().get(i)+"\n");
@@ -483,6 +481,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
+    //Funcion para imprimir la actividad de ataque en un text area
     public void imprimirActividadZombie(ThreadZombie zombie){
         for (int i = 0; i < zombie.getZombie().getAtaques().size(); i++) {
             txaRegistroDeActividad.append(zombie.getZombie().getAtaques().get(i)+"\n");
@@ -490,12 +489,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
+    //Quita todo el registro de actividad del text are
     public void quitarActividad(){
         txaRegistroDeActividad.removeAll();
     }
     
     public static void main(String args[]) {
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CampoDeBatalla().setVisible(true);

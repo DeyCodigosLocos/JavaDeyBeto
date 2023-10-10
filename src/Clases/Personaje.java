@@ -2,6 +2,7 @@ package Clases;
 
 //import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -10,7 +11,7 @@ import static java.util.Spliterators.iterator;
 
 
 
-public class Personaje {
+public class Personaje implements Serializable{
     private String nombre,tipo;
     private int alcance,nivel,nivelAparicion,espacios,danoPorSegundo,vida,posX,posY;
     private boolean activo;

@@ -2,11 +2,12 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import java.awt.Point;
+import java.io.Serializable;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ThreadInGame extends Thread {
+public class ThreadInGame extends Thread implements Serializable {
     CampoDeBatalla ventana;
     boolean isRunnig;
 

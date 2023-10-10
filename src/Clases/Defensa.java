@@ -2,6 +2,7 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -11,7 +12,7 @@ enum tipo{
     CONTACTO, AEREO, M_ALCANCE, IMPACTO, BLOQUE, MULTIPLE;
 }
 
-public class Defensa extends Personaje{
+public class Defensa extends Personaje implements Serializable{
     private int velocidad;
     private JLabel label;
     private ThreadZombie objetivo;
