@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
+    boolean arbolColocado;
     ArrayList<ThreadZombie> zombies;
     ArrayList<ThreadDefensa> defensas;
     ThreadDefensa tav;
@@ -26,7 +27,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     ArrayList<Zombie> personajeZombie;
     Defensa defensaParaColocar;
     
-    public CampoDeBatalla() {
+    public CampoDeBatalla(){
+        arbolColocado = false;
         zombies = new ArrayList<ThreadZombie>();
         defensas = new ArrayList<ThreadDefensa>();
         personajeZombie = new ArrayList<Zombie>();
@@ -34,16 +36,41 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         initComponents();
         generaMatriz();
         pintarZonaSegura();
-        cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida);
-        Defensa arbolVida = new Defensa("imgs//arbolDeLaVida.png",new JLabel(),"arbol", "", 0, 1, 1, 0, 0, 100, 0, 0);
+        Defensa arbolVida = new Defensa("imgs//arbolDeLaVida.png",new JLabel(),"arbol", "CONTACTO", 0, 1, 1, 0, 0, 100, 0, 0);
         tav = new ThreadDefensa(arbolVida, this);
-        this.nivel = 0;
+        this.nivel = 1;
         btnIniciarGuerra.setEnabled(false);
         cargarZombies();
         cargarDefensas();
+        personajeDefensa.add(arbolVida);
         defensaParaColocar = null;
         tig = new ThreadInGame(this);
-        tig.start();
+        refreshDefensesListBox(personajeDefensa);
+    }
+    
+    public ThreadDefensa buscarDefensa(int posX,int posY){
+        for (int i = 0; i < defensas.size(); i++) {
+            ThreadDefensa get = defensas.get(i);
+            if (get.getDefensa().getPosX() == posX && get.getDefensa().getPosY() == posY)
+                return get;
+        }
+        return null;
+    }
+    
+    //Detiene todos los threads del campo de juego
+    public void stopThreads(){
+        for (int i = 0; i < zombies.size(); i++) {
+           pnlCampoJuego.remove(zombies.get(i).getZombie().getLabel());
+           pnlCampoJuego.revalidate();
+           pnlCampoJuego.repaint();
+           zombies.get(i).setIsRunning(false);
+        }
+        for (int i = 0; i < defensas.size(); i++) {
+           pnlCampoJuego.remove(defensas.get(i).getDefensa().getLabel());
+           pnlCampoJuego.revalidate();
+           pnlCampoJuego.repaint();
+           zombies.get(i).setIsRunning(false);
+        }
     }
     
     //Funcion que carga todos las defensas que se crearon
@@ -59,8 +86,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         Defensa defensa = ((Defensa)FileManager.readObject("Defensas//"+archivo.getName()));
                         if (defensa == null)
                             System.out.println("me cago en las defensas");
-                        else
+                        else{
                             personajeDefensa.add(defensa);
+                        }
+                            
+                            
                     }
                 }
             }
@@ -92,6 +122,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
+    //Genera aleatoriamente los zombies en el campo de batalla
     public void generarZombies(int size){
         for (int i = 0; i < size; i++) {
             //crea el label
@@ -124,13 +155,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             label.addMouseListener(new MouseAdapter() {
                         @Override
                      public void mouseEntered(MouseEvent e) {
-                         imprimirActividadZombie(tz);
                          label.setForeground(Color.RED);
                      }
 
                         @Override
                      public void mouseExited(MouseEvent e) {
-                         quitarActividad();
                          label.setForeground(Color.BLACK);
                      }
             });
@@ -138,6 +167,26 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
+    public void refreshDefensesListBox(ArrayList<Defensa> defensas){
+        limpiarDefensesListBox();
+        DefaultListModel modelo = (DefaultListModel) lstDefensas.getModel();
+        for (int i = 0; i < defensas.size(); i++) {
+            Defensa defensa = defensas.get(i);
+            if(defensa.getNivelAparicion() <= this.nivel)
+                modelo.addElement(defensa.getNombre());
+        }
+    }
+    
+    public void limpiarDefensesListBox(){
+        DefaultListModel modelo = new DefaultListModel();
+        lstDefensas.setModel(modelo);
+    }
+    
+     
+    
+    
+    //----------------------------------------------------GUI DE VENTANA------------------------------------------------------
+    //Funcion no implementada
     public void pintarZonaSegura(){
         for (int i = 4; i < 21; i++) 
             for (int j = 4; j < 21; j++){
@@ -174,7 +223,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
     }
     
-    //posiciona aleatoriamente a los zombies
+    //posiciona aleatoriamente el label
     public void setAparicion(JLabel label){
         int colOrRow = (new Random()).nextInt(2);//0: col  1: filas
         int dir = (new Random()).nextInt(2);//0: primera  1: segunda
@@ -189,6 +238,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             else
                 label.setLocation(600, (new Random()).nextInt(25)*25);
         }         
+    }
+    
+    //Mueve un label a la posicion deseada
+    public void moverLabel(int posX,int posY,JLabel label){
+        label.setLocation(posX, posY);
     }
     
     //Cambia la imagen de un JLabel
@@ -215,22 +269,21 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         btn.setLayout(layout);
         
     }
-    
+    //----------------------------------------------------GUI DE VENTANA------------------------------------------------------
+
+    //Get el arbol de la vida 
     public ThreadDefensa getTav() {
         return tav;
     }
     
+    //Get lista de zombies en el juego 
     public ArrayList<ThreadZombie> getZombies() {
         return zombies;
     }
 
+    //Get lista de defensas en el campo de juego
     public ArrayList<ThreadDefensa> getDefensas() {
         return defensas;
-    }
-    
-    //Mueve un label a la posicion deseada
-    public void moverLabel(int posX,int posY,JLabel label){
-        label.setLocation(posX, posY);
     }
     
     //Revisa si la posX y posY, ya esta ocupada por algun personaje
@@ -273,9 +326,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         btnColocarDefensa = new javax.swing.JButton();
         lblPosX = new javax.swing.JLabel();
         lblPosY = new javax.swing.JLabel();
-        btnColocarArbolDeVida = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstDefensas = new javax.swing.JList<>();
+        btnQuitarDefensa = new javax.swing.JButton();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -315,14 +368,20 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
         lblPosY.setText("Y:");
 
-        btnColocarArbolDeVida.setText("Colocar Arbol");
-        btnColocarArbolDeVida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnColocarArbolDeVidaActionPerformed(evt);
+        lstDefensas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstDefensasMouseClicked(evt);
             }
         });
+        jScrollPane3.setViewportView(lstDefensas);
 
-        jScrollPane2.setViewportView(jList2);
+        btnQuitarDefensa.setText("Quitar");
+        btnQuitarDefensa.setPreferredSize(new java.awt.Dimension(75, 26));
+        btnQuitarDefensa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuitarDefensaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -342,10 +401,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnColocarDefensa)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(180, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(btnColocarDefensa)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -363,11 +425,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                             .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(btnColocarDefensa)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnColocarArbolDeVida, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnColocarDefensa)
+                            .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(121, 121, 121)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
@@ -377,7 +439,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
     //Boton para iniciar la guerra
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
-        generarZombies(nivel*5+20);
+        generarZombies(nivel*5+15);
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
             get.start();
@@ -388,156 +450,112 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
         btnIniciarGuerra.setEnabled(false);
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
-    
+
     //Boton para colocar una defensa en el campo de juego
     private void btnColocarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarDefensaActionPerformed
-        if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
-            int posX = Integer.parseInt(txfPosX.getText());
-            int posY = Integer.parseInt(txfPosY.getText());
-            if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
-                if(checkPosition(posX, posY)){
-                    String tipoElegido = defensaParaColocar.getTipo();
-                    int repeticiones = 0;
-                    if(tipoElegido == "MULTIPLE"){
-                        DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
-                        repeticiones = defensaMultiple.getRepeticiones();
-                    }
-                    Defensa defensa;
-                    switch (tipoElegido) {
-                        case "AEREO":
-                            defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                            break;
-                        case "IMPACTO":
-                            defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                            break;
-                        case "MULTIPLE":
-                            defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
-                            break;
-                        case "CONTACTO":
-                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                            break;
-                        case "ALCANCE" :
-                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                            break;
-                       default :
-                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
-                        
-                    }
-                    //System.out.println(posX + ", " + posY);
-                    JLabel label = new JLabel(defensa.getNivel()+ "");
-                    label.setSize(25,25);
-                    label.setBackground(Color.BLUE);
-                    label.setLocation(posX*25, posY*25);
-                    label.setVisible(true);
-                    label.addMouseListener(new MouseAdapter() {
+        if(defensaParaColocar != null){
+                if(defensaParaColocar.getNombre()== "arbol" && arbolColocado){
+                JOptionPane.showMessageDialog(pnlCampoJuego, "Error, arbol ya colocado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }else{
+                if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
+                    int posX = Integer.parseInt(txfPosX.getText());
+                    int posY = Integer.parseInt(txfPosY.getText());
+                    if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
+                        if(checkPosition(posX, posY)){
+                            String tipoElegido = defensaParaColocar.getTipo();
+                            if(defensaParaColocar.getNombre().equals("arbol")){
+                                arbolColocado = true;
+                                defensaParaColocar.setPosX(posX);
+                                defensaParaColocar.setPosY(posY);
+                                btnIniciarGuerra.setEnabled(true);
+                            }   
+                            int repeticiones = 0;
+                            Defensa defensa;
+                            switch (tipoElegido) {
+                                case "AEREO":
+                                    defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                    break;
+                                case "IMPACTO":
+                                    defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                    break;
+                                case "MULTIPLE":
+                                    DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
+                                    repeticiones = defensaMultiple.getRepeticiones();
+                                    defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
+                                    break;
+                                case "CONTACTO":
+                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                    break;
+                                case "ALCANCE" :
+                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                    break;
+                               default :
+                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
+                            }
+                            JLabel label = new JLabel(defensa.getNombre()+ "");
+                            label.setSize(25,25);
+                            label.setBackground(Color.BLUE);
+                            label.setLocation(posX*25, posY*25);
+                            label.setVisible(true);
+                            label.addMouseListener(new MouseAdapter() {
                                 @Override
-                             public void mouseEntered(MouseEvent e) {
-                                 imprimirActividadDefensa(tav);
-                                 label.setForeground(Color.RED);
-                             }
-
+                                public void mouseEntered(MouseEvent e) {
+                                    label.setForeground(Color.RED);
+                                }
                                 @Override
-                             public void mouseExited(MouseEvent e) {
-                                 quitarActividad();
-                                 label.setForeground(Color.BLACK);
-                             }
-                    });
-                    defensa.setLabel(label);
-                    ThreadDefensa td = new ThreadDefensa(defensa, this);
-                    defensas.add(td);
-                    pnlCampoJuego.add(label);
-                    label.setText(defensa.getVida()+"");
-                    //cambiarImagenDeLabel("imgs//defensa1.png", label); 
+                                public void mouseExited(MouseEvent e) {
+                                    label.setForeground(Color.BLACK);
+                                }
+                            });
+                            defensa.setLabel(label);
+                            ThreadDefensa td = new ThreadDefensa(defensa, this);
+                            defensas.add(td);
+                            pnlCampoJuego.add(label);
+                            pnlCampoJuego.revalidate();
+                            pnlCampoJuego.repaint();
+                        }else
+                            JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
+                    }else
+                        JOptionPane.showMessageDialog(pnlCampoJuego, "Error, no se puede colocar una defensa en " + posX + "," + posY, "Error", JOptionPane.ERROR_MESSAGE);
                 }else
-                    JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
-            }else
-                JOptionPane.showMessageDialog(pnlCampoJuego, "Error, no se puede colocar una defensa en " + posX + "," + posY, "Error", JOptionPane.ERROR_MESSAGE);
+                     JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
+            } 
         }else
-             JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(pnlCampoJuego, "Error, selecciona una defensa", "Error", JOptionPane.ERROR_MESSAGE);
+        
     }//GEN-LAST:event_btnColocarDefensaActionPerformed
 
     private void txfPosYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosYActionPerformed
-        // TODO add your handling code here:
+        System.out.println("hola");
     }//GEN-LAST:event_txfPosYActionPerformed
     
-    //Boton para colocar el arbol de la vida
-    private void btnColocarArbolDeVidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarArbolDeVidaActionPerformed
+    private void lstDefensasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstDefensasMouseClicked
+        for (int i = 0; i < personajeDefensa.size(); i++) {
+            Defensa get = personajeDefensa.get(i);
+            if (get.getNombre().equals(lstDefensas.getSelectedValue()))
+                defensaParaColocar = get;
+        }
+        System.out.println(defensaParaColocar.getNombre());
+    }//GEN-LAST:event_lstDefensasMouseClicked
+
+    private void btnQuitarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarDefensaActionPerformed
         if (isInt(txfPosX.getText()) && isInt(txfPosY.getText())){
             int posX = Integer.parseInt(txfPosX.getText());
             int posY = Integer.parseInt(txfPosY.getText());
-            if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
-                if(checkPosition(posX, posY)){
-                    tav.getDefensa().setPosX(posX);
-                    tav.getDefensa().setPosY(posY);
-                    System.out.println(posX + ", " + posY);
-                    JLabel label = new JLabel(tav.getDefensa().getNivel()+ "");
-                    label.setSize(25,25);
-                    label.setBackground(Color.BLUE);
-                    label.setLocation(posX*25, posY*25);
-                    label.setVisible(true); 
-                    label.setText(tav.getDefensa().getVida()+"");
-                    label.addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mouseEntered(MouseEvent e) {
-                                imprimirActividadDefensa(tav);
-                                label.setForeground(Color.RED);
-                            }
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                quitarActividad();
-                                label.setForeground(Color.BLACK);
-                            }
-                    });
-                    tav.getDefensa().setLabel(label);
-                    pnlCampoJuego.add(label);
-                    label.setText(tav.getDefensa().getVida()+"");
-                    cambiarImagenDeBoton("imgs//arbolDeLaVida.png", btnColocarArbolDeVida); 
-                    defensas.add(tav);
-                    //cambiarImagenDeLabel("imgs//arbolDeLaVida.png", label);
-                    btnIniciarGuerra.setEnabled(true);
-                }else
-                    JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
-            }else
-                JOptionPane.showMessageDialog(pnlCampoJuego, "Error, no se puede colocar una defensa en " + posX + "," + posY, "Error", JOptionPane.ERROR_MESSAGE);
+            ThreadDefensa buscado = buscarDefensa(posX,posY);
+            if(buscado != null){
+                pnlCampoJuego.remove(buscado.getDefensa().getLabel());
+                pnlCampoJuego.revalidate();
+                pnlCampoJuego.repaint();
+                defensas.remove(buscado);
+                buscado.getDefensa().setLabel(null);
+            }
         }else
-             JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
-    }//GEN-LAST:event_btnColocarArbolDeVidaActionPerformed
+                 JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_btnQuitarDefensaActionPerformed
     
-    //Funcion para imprimir la actividad de ataque en un text area
-    public void imprimirActividadDefensa(ThreadDefensa defensa){
-        for (int i = 0; i < defensa.getDefensa().getAtaques().size(); i++) {
-            //txaRegistroDeActividad.append(defensa.getDefensa().getAtaques().get(i)+"\n");
-            System.out.println(defensa.getDefensa().getAtaques().get(i)+"\n");
-        }
-    }
     
-    //Funcion para imprimir la actividad de ataque en un text area
-    public void imprimirActividadZombie(ThreadZombie zombie){
-        for (int i = 0; i < zombie.getZombie().getAtaques().size(); i++) {
-            //txaRegistroDeActividad.append(zombie.getZombie().getAtaques().get(i)+"\n");
-            System.out.println(zombie.getZombie().getAtaques().get(i)+"\n");
-        }
-    }
-    
-    //Quita todo el registro de actividad del text are
-    public void quitarActividad(){
-        //txaRegistroDeActividad.removeAll();
-    }
-    
-    public void stopThreads(){
-        for (int i = 0; i < zombies.size(); i++) {
-           pnlCampoJuego.remove(zombies.get(i).getZombie().getLabel());
-           pnlCampoJuego.revalidate();
-           pnlCampoJuego.repaint();
-           zombies.get(i).setIsRunning(false);
-        }
-        for (int i = 0; i < defensas.size(); i++) {
-           pnlCampoJuego.remove(defensas.get(i).getDefensa().getLabel());
-           pnlCampoJuego.revalidate();
-           pnlCampoJuego.repaint();
-           zombies.get(i).setIsRunning(false);
-        }
-    }
     
     public boolean allZombiesDead(){
         for (int i = 0; i < zombies.size(); i++) {
@@ -567,15 +585,15 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
             // Verifica la selección del usuario y muestra un mensaje correspondiente
             switch (seleccion) {
-                case 0 -> {
+                case 0:
                 JOptionPane.showMessageDialog(null, "Has seleccionado Repetir", "Resultado", JOptionPane.INFORMATION_MESSAGE);
                 refreshLevel(nivel);
-                }
-                case 1 -> {
+                
+                case 1:
                 JOptionPane.showMessageDialog(null, "Has seleccionado Siguiente", "Resultado", JOptionPane.INFORMATION_MESSAGE);
                 refreshLevel(nivel+1);
-                }
-                default -> // El usuario cerró el cuadro de diálogo
+                
+                default: // El usuario cerró el cuadro de diálogo
                     JOptionPane.showMessageDialog(null, "Has cerrado el cuadro de diálogo", "Resultado", JOptionPane.INFORMATION_MESSAGE);
                 //acá hay que decidir qué hacer si se toca la x o si se intenta bloquear
             }
@@ -601,15 +619,15 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnColocarArbolDeVida;
     private javax.swing.JButton btnColocarDefensa;
     private javax.swing.JButton btnIniciarGuerra;
+    private javax.swing.JButton btnQuitarDefensa;
     private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblPosX;
     private javax.swing.JLabel lblPosY;
+    private javax.swing.JList<String> lstDefensas;
     private javax.swing.JPanel pnlCampoJuego;
     private javax.swing.JTextField txfPosX;
     private javax.swing.JTextField txfPosY;
