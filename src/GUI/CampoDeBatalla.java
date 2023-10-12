@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class CampoDeBatalla extends javax.swing.JFrame {
     int nivel;
+    private int usedEspaces = 0;
     boolean arbolColocado;
     ArrayList<ThreadZombie> zombies;
     ArrayList<ThreadDefensa> defensas;
@@ -28,6 +29,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     Defensa defensaParaColocar;
     
     public CampoDeBatalla(){
+        //this.setLocationRelativeTo(null);
         arbolColocado = false;
         zombies = new ArrayList<ThreadZombie>();
         defensas = new ArrayList<ThreadDefensa>();
@@ -46,6 +48,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         defensaParaColocar = null;
         tig = new ThreadInGame(this);
         refreshDefensesListBox(personajeDefensa);
+        
     }
     
     public ThreadDefensa buscarDefensa(int posX,int posY){
@@ -57,6 +60,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return null;
     }
     
+   
     //Detiene todos los threads del campo de juego
     public void stopThreads(){
         for (int i = 0; i < zombies.size(); i++) {
@@ -164,6 +168,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                      }
             });
             pnlCampoJuego.add(label);
+            pnlCampoJuego.revalidate();
+            pnlCampoJuego.repaint();
         }
     }
     
@@ -183,8 +189,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }
     
      
-    
-    
     //----------------------------------------------------GUI DE VENTANA------------------------------------------------------
     //Funcion no implementada
     public void pintarZonaSegura(){
@@ -284,6 +288,10 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Get lista de defensas en el campo de juego
     public ArrayList<ThreadDefensa> getDefensas() {
         return defensas;
+    }
+
+    public int getNivel() {
+        return nivel;
     }
     
     //Revisa si la posX y posY, ya esta ocupada por algun personaje
@@ -439,7 +447,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
     //Boton para iniciar la guerra
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
+        
+        System.out.println("Tamaño del arreglo antes de iniciar: " + zombies.size());
         generarZombies(nivel*5+15);
+        System.out.println("Tamaño del arreglo después de iniciar: " + zombies.size());
+
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
             get.start();
@@ -448,7 +460,10 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             ThreadDefensa get = defensas.get(i);
             get.start();
         }
+        
+        tig.start();
         btnIniciarGuerra.setEnabled(false);
+        
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
 
     //Boton para colocar una defensa en el campo de juego
@@ -463,57 +478,75 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     int posY = Integer.parseInt(txfPosY.getText());
                     if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                         if(checkPosition(posX, posY)){
-                            String tipoElegido = defensaParaColocar.getTipo();
-                            if(defensaParaColocar.getNombre().equals("arbol")){
-                                arbolColocado = true;
-                                defensaParaColocar.setPosX(posX);
-                                defensaParaColocar.setPosY(posY);
-                                btnIniciarGuerra.setEnabled(true);
-                            }   
-                            int repeticiones = 0;
-                            Defensa defensa;
-                            switch (tipoElegido) {
-                                case "AEREO":
-                                    defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                                    break;
-                                case "IMPACTO":
-                                    defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                                    break;
-                                case "MULTIPLE":
-                                    DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
-                                    repeticiones = defensaMultiple.getRepeticiones();
-                                    defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
-                                    break;
-                                case "CONTACTO":
-                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                                    break;
-                                case "ALCANCE" :
-                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
-                                    break;
-                               default :
-                                    defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
-                            }
-                            JLabel label = new JLabel(defensa.getNombre()+ "");
-                            label.setSize(25,25);
-                            label.setBackground(Color.BLUE);
-                            label.setLocation(posX*25, posY*25);
-                            label.setVisible(true);
-                            label.addMouseListener(new MouseAdapter() {
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-                                    label.setForeground(Color.RED);
+                            if (usedEspaces+defensaParaColocar.getEspacios() <= (nivel*5)+15){
+                                
+                            
+                                String tipoElegido = defensaParaColocar.getTipo();
+                                if(defensaParaColocar.getNombre().equals("arbol")){
+                                    
+                                    arbolColocado = true;
+                                    defensaParaColocar.setPosX(posX);
+                                    defensaParaColocar.setPosY(posY);
+                                    btnIniciarGuerra.setEnabled(true);
+                                }   
+                                int repeticiones = 0;
+                                Defensa defensa;
+                                switch (tipoElegido) {
+                                    case "AEREO":
+                                        defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        break;
+                                    case "IMPACTO":
+                                        defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        break;
+                                    case "MULTIPLE":
+                                        DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
+                                        repeticiones = defensaMultiple.getRepeticiones();
+                                        defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
+                                        break;
+                                    case "CONTACTO":
+                                        if (defensaParaColocar.getNombre().equals("arbol")) {
+                                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                            tav.setDefensa(defensa);                                            
+                                        }else{
+                                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        }
+                                        break;
+                                    case "ALCANCE" :
+                                        defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        break;
+                                   default :
+                                        defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
                                 }
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-                                    label.setForeground(Color.BLACK);
-                                }
-                            });
-                            defensa.setLabel(label);
-                            ThreadDefensa td = new ThreadDefensa(defensa, this);
-                            defensas.add(td);
-                            pnlCampoJuego.add(label);
-                            pnlCampoJuego.revalidate();
-                            pnlCampoJuego.repaint();
+                                JLabel label = new JLabel(defensa.getNombre()+ "");
+                                label.setSize(25,25);
+                                label.setBackground(Color.BLUE);
+                                label.setLocation(posX*25, posY*25);
+                                label.setVisible(true);
+                                
+                                label.addMouseListener(new MouseAdapter() {
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+                                        label.setForeground(Color.RED);
+                                    }
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+                                        label.setForeground(Color.BLACK);
+                                    }
+                                });
+                                
+                                    defensa.setLabel(label);
+                                ThreadDefensa td = new ThreadDefensa(defensa, this);
+                                defensas.add(td);
+                                pnlCampoJuego.add(label);
+                                pnlCampoJuego.revalidate();
+                                pnlCampoJuego.repaint();
+                                usedEspaces += defensa.getEspacios();
+                                System.out.println("Espacios: "+defensa.getEspacios());
+                                System.out.println("Espacios disponibles: " + usedEspaces );
+                                
+                                
+                            }else
+                                JOptionPane.showMessageDialog(pnlCampoJuego, "Error, espacios insuficientes. Espacios restantes: " + (((nivel*5)+15)-usedEspaces), "Error", JOptionPane.ERROR_MESSAGE);
                         }else
                             JOptionPane.showMessageDialog(pnlCampoJuego, "Error: " + posX + "," + posY + " posicion en uso", "Error", JOptionPane.ERROR_MESSAGE);
                     }else
@@ -550,12 +583,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                 pnlCampoJuego.repaint();
                 defensas.remove(buscado);
                 buscado.getDefensa().setLabel(null);
+                usedEspaces -= buscado.getDefensa().getEspacios();
             }
         }else
                  JOptionPane.showMessageDialog(pnlCampoJuego, "Error, debe ser un número entero", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnQuitarDefensaActionPerformed
-    
-    
     
     public boolean allZombiesDead(){
         for (int i = 0; i < zombies.size(); i++) {
@@ -584,30 +616,30 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             );
 
             // Verifica la selección del usuario y muestra un mensaje correspondiente
+            System.out.println("Opcion elegida: "+seleccion);
             switch (seleccion) {
                 case 0:
-                JOptionPane.showMessageDialog(null, "Has seleccionado Repetir", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                refreshLevel(nivel);
-                
+                    refreshLevel(nivel);
+                    break;
                 case 1:
-                JOptionPane.showMessageDialog(null, "Has seleccionado Siguiente", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                refreshLevel(nivel+1);
-                
+                    refreshLevel(nivel+1);
+                    break;
                 default: // El usuario cerró el cuadro de diálogo
-                    JOptionPane.showMessageDialog(null, "Has cerrado el cuadro de diálogo", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                //acá hay que decidir qué hacer si se toca la x o si se intenta bloquear
+                    refreshLevel(nivel);
             }
         }
     }
-
+    
     public void setNivel(int nivel) {
         this.nivel = nivel;
     }
 
     public void refreshLevel(int nivel){
-        //se deben actualizar los listbox con los valores disponibles según nivel
-        //
         this.setNivel(nivel);
+        refreshDefensesListBox(personajeDefensa);
+        tig.setIsRunnig(false);
+        tig = new ThreadInGame(this);
+        arbolColocado = false;
     }
     
     public static void main(String args[]) {

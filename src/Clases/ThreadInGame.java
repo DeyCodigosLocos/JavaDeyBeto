@@ -11,6 +11,7 @@ public class ThreadInGame extends Thread implements Serializable {
     CampoDeBatalla ventana;
     boolean isRunnig;
 
+   
     public ThreadInGame(CampoDeBatalla ventana) {
         this.ventana = ventana;
         this.isRunnig = true;
@@ -20,7 +21,7 @@ public class ThreadInGame extends Thread implements Serializable {
     public void run() {
         while(isRunnig){
             try {
-                
+                System.out.println("Nivel actual: " + ventana.getNivel());
                 if(ventana.allZombiesDead()){
                     System.out.println("TODOS LOS ZOMBIES ESTAN MUERTOS");
                     ventana.stopThreads();
@@ -29,7 +30,7 @@ public class ThreadInGame extends Thread implements Serializable {
                     ventana.finishLevel(true);
                 }
                       
-                 if(ventana.getTav().getDefensa().getVida()<=0){
+                 if(ventana.getTav().getDefensa().isDead()){
                     System.out.println("TODOS LAS DEFENSAS ESTAN MUERTAS");
                     ventana.stopThreads();
                     ventana.getZombies().clear();
@@ -45,4 +46,9 @@ public class ThreadInGame extends Thread implements Serializable {
             
         } 
     }
+    
+     public void setIsRunnig(boolean isRunnig) {
+        this.isRunnig = isRunnig;
+    }
+
 }

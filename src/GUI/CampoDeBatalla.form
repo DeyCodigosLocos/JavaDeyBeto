@@ -70,7 +70,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnColocarDefensa" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="btnQuitarDefensa" max="32767" attributes="0"/>
+                          <Component id="btnQuitarDefensa" pref="76" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane3" min="-2" pref="169" max="-2" attributes="0"/>
                   </Group>
