@@ -21,6 +21,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
         ImageIcon icono = new ImageIcon("imgs//zombie.png");
         this.setIconImage(icono.getImage());
         cmbTipoDePersonaje.setSelectedIndex(0);
+        cmbTipoDeZombie.setSelectedIndex(0);
     }
 
     private boolean checkInputs(){
@@ -243,8 +244,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
             cmbTipoDeDefensa.setVisible(false);
             cmbTipoDeZombie.setVisible(true);
             cmbTipoDeZombie.setLocation(160, 64);
-            txfEspacioPersonaje.setEnabled(false);
-            txfEspacioPersonaje.setText("1");
+            
         }else{
             cmbTipoDeZombie.setVisible(false);
             cmbTipoDeDefensa.setVisible(true);
@@ -338,16 +338,16 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
             System.out.println("hola");
             if (cmbTipoDePersonaje.getSelectedIndex() == 0){
                 if(cmbTipoDeZombie.getSelectedIndex() == 0){
-                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }else if(cmbTipoDeZombie.getSelectedIndex() == 1){
-                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "M_ALCANCE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    Zombie zombie = new Zombie(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "M_ALCANCE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }else if(cmbTipoDeZombie.getSelectedIndex() == 2){
-                    Zombie zombie = new ZombieVolador(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "AEREO",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    Zombie zombie = new ZombieVolador(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "AEREO",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }else {
-                    Zombie zombie = new ZombieChoque(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CHOQUE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
+                    Zombie zombie = new ZombieChoque(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CHOQUE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }
                 JOptionPane.showMessageDialog(null, txfNombrePersonaje.getText()+" ha sido creado", "Personaje Creado", JOptionPane.INFORMATION_MESSAGE);

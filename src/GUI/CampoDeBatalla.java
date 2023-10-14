@@ -50,6 +50,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         refreshDefensesListBox(personajeDefensa);
         lblEspaciosDisponibes.setText("0/"+((nivel*5)+15));
         lblEspaciosDisponibes.setLocation(lblEspaciosDisponibes.getLocation().x, 225);
+        System.out.println("Zombies arreglo tamanno: " + personajeZombie.size());
+        System.out.println("Cabe zombies test: " + cabeZombie(5));
         
     }
     
@@ -129,12 +131,23 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             System.out.println("La ruta especificada no es una carpeta.");
         }
     }
+   
+    public boolean cabeZombie(int espacios){
+        for (int i = 0; i < personajeZombie.size(); i++) {
+            Zombie get = personajeZombie.get(i);
+            if(get.getEspacios()<=espacios)
+                return true;
+        }
+        return false;
+    }
     
     //Genera aleatoriamente los zombies en el campo de batalla
     public void generarZombies(int size){
-        for (int i = 0; i < size; i++) {
-            //crea el label
-            JLabel label =  new JLabel(""+i);
+        int espaciosOcupados = 0;
+        System.out.println("negritos: " + (size-espaciosOcupados));
+        while(espaciosOcupados < size && cabeZombie(size-espaciosOcupados)){
+            System.out.println("Espacios restantes zombies: " + (size-espaciosOcupados));
+            JLabel label =  new JLabel("");
             label.setSize(25,25);
             label.setBackground(Color.WHITE);
             label.setOpaque(true);
@@ -142,39 +155,42 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             String tipoElegido;
             Zombie zombie = personajeZombie.get(new Random().nextInt(personajeZombie.size()));
             tipoElegido = zombie.getTipo();
-            switch (tipoElegido) {
-                case "AEREO":
-                    zombie = new ZombieVolador(zombie.getImagen(),new JLabel(), zombie.getNombre(), "AEREO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
-                    break;
-                case "CHOQUE":
-                    zombie = new ZombieChoque(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CHOQUE", 1, 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
-                    break;
-                case "M_ALCANCE":
-                    zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "M_ALCANCE", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
-                    break;
-                default:
-                    zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+            
+            if (espaciosOcupados+zombie.getEspacios()<=size){
+                switch (tipoElegido) {
+                    case "AEREO":
+                        zombie = new ZombieVolador(zombie.getImagen(),new JLabel(), zombie.getNombre(), "AEREO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                        break;
+                    case "CHOQUE":
+                        zombie = new ZombieChoque(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CHOQUE", 1, 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                        break;
+                    case "M_ALCANCE":
+                        zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "M_ALCANCE", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                        break;
+                    default:
+                        zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                }
+                zombie.setLabel(label);
+                label.setText(zombie.getTipo()+"");
+                cambiarImagenDeLabel(zombie.getImagen(), label);
+                // Crear el thread
+                ThreadZombie tz =  new ThreadZombie(zombie, this);
+                zombies.add(tz);
+                label.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        label.setForeground(Color.RED);
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        label.setForeground(Color.BLACK);
+                    }
+                });
+                pnlCampoJuego.add(label);
+                pnlCampoJuego.revalidate();
+                pnlCampoJuego.repaint();
+                espaciosOcupados+=zombie.getEspacios();
             }
-            zombie.setLabel(label);
-            label.setText(zombie.getTipo()+"");
-            cambiarImagenDeLabel(zombie.getImagen(), label);
-            // Crear el thread
-            ThreadZombie tz =  new ThreadZombie(zombie, this);
-            zombies.add(tz);
-            label.addMouseListener(new MouseAdapter() {
-                        @Override
-                     public void mouseEntered(MouseEvent e) {
-                         label.setForeground(Color.RED);
-                     }
-
-                        @Override
-                     public void mouseExited(MouseEvent e) {
-                         label.setForeground(Color.BLACK);
-                     }
-            });
-            pnlCampoJuego.add(label);
-            pnlCampoJuego.revalidate();
-            pnlCampoJuego.repaint();
         }
     }
     
