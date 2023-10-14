@@ -30,6 +30,14 @@ public class Personaje implements Serializable{
         this.activo = true;
         this.ataques = new ArrayList<String>();
     }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
     
     public String toString(){
         return "Nombre: " + nombre + " X: " + posX + " Y: " + posY;

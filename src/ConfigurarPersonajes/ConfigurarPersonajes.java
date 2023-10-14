@@ -11,12 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author X
- */
 public class ConfigurarPersonajes extends javax.swing.JFrame {
-
     String cantidadAtaques;
     public ConfigurarPersonajes() {
         initComponents();
@@ -25,15 +20,14 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         ImageIcon icono = new ImageIcon("imgs//zombie.png");
         this.setIconImage(icono.getImage());
+        cmbTipoDePersonaje.setSelectedIndex(0);
     }
 
     private boolean checkInputs(){
-        if(isInt(txfVidaPersonaje.getText()))
-            if(isInt(txfDanoPersonaje.getText()))
-                if(isInt(txfEspacioPersonaje.getText()))
-                    if(isInt(txfNivelAparicionPersonaje.getText()))
-                        if(isInt(txfAlcancePersonaje.getText()))
-                            return true;
+        if(isInt(txfVidaPersonaje.getText()) && isInt(txfDanoPersonaje.getText()))
+            if(isInt(txfEspacioPersonaje.getText()) && isInt(txfNivelAparicionPersonaje.getText()))
+                if(isInt(txfAlcancePersonaje.getText()))
+                    return true;
         return false;
     }
     @SuppressWarnings("unchecked")
@@ -194,7 +188,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(125, 125, 125)
                         .addComponent(btnCrearPersonaje, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +232,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
                     .addComponent(txfAlcancePersonaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnCrearPersonaje, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -356,6 +350,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
                     Zombie zombie = new ZombieChoque(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CHOQUE",Integer.parseInt(txfAlcancePersonaje.getText()), 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), 1, Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(zombie, "Zombies//" + zombie.getNombre()+".txt");
                 }
+                JOptionPane.showMessageDialog(null, txfNombrePersonaje.getText()+" ha sido creado", "Personaje Creado", JOptionPane.INFORMATION_MESSAGE);
             }else{
                 if(cmbTipoDeDefensa.getSelectedIndex() == 0){
                     Defensa defensa = new Defensa(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "CONTACTO",1, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), Integer.parseInt(txfDanoPersonaje.getText()), Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
@@ -376,6 +371,7 @@ public class ConfigurarPersonajes extends javax.swing.JFrame {
                     Defensa defensa = new Defensa(txfImagenPersonaje.getText(),new JLabel(), txfNombrePersonaje.getText(), "BLOQUE",0, 1, Integer.parseInt(txfNivelAparicionPersonaje.getText()), Integer.parseInt(txfEspacioPersonaje.getText()), 0, Integer.parseInt(txfVidaPersonaje.getText()), 0, 0);
                     FileManager.writeObject(defensa, "Defensas//" + defensa.getNombre()+".txt");
                 }
+                JOptionPane.showMessageDialog(null, txfNombrePersonaje.getText()+" ha sido creado", "Personaje Creado", JOptionPane.INFORMATION_MESSAGE);
             }
         }else
             JOptionPane.showMessageDialog(null, "Error, los datos tiene que ser enteros", "Error", JOptionPane.ERROR_MESSAGE);

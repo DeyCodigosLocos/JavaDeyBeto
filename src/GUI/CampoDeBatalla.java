@@ -48,6 +48,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         defensaParaColocar = null;
         tig = new ThreadInGame(this);
         refreshDefensesListBox(personajeDefensa);
+        lblEspaciosDisponibes.setText("0/"+((nivel*5)+15));
+        lblEspaciosDisponibes.setLocation(lblEspaciosDisponibes.getLocation().x, 225);
         
     }
     
@@ -60,7 +62,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return null;
     }
     
-   
     //Detiene todos los threads del campo de juego
     public void stopThreads(){
         for (int i = 0; i < zombies.size(); i++) {
@@ -114,10 +115,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     if (archivo.isFile()) {
                         System.out.println(archivo.getName());
                         Zombie zombie = (Zombie)FileManager.readObject("Zombies//" + archivo.getName());
-                        
-                        if (zombie != null)
-                            System.out.println("me cago en los zombies");
-                        personajeZombie.add(zombie);
+                        if (zombie != null){
+                            System.out.println("zombie se cargo");
+                            personajeZombie.add(zombie);
+                        }else{
+                            System.out.println("no se cargo el zombie");
+                        }
+                            
                     }
                 }
             }
@@ -140,19 +144,20 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             tipoElegido = zombie.getTipo();
             switch (tipoElegido) {
                 case "AEREO":
-                    zombie = new ZombieVolador("hola",new JLabel(), zombie.getNombre(), "AEREO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                    zombie = new ZombieVolador(zombie.getImagen(),new JLabel(), zombie.getNombre(), "AEREO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
                 case "CHOQUE":
-                    zombie = new ZombieChoque("hola",new JLabel(), zombie.getNombre(), "CHOQUE", 1, 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                    zombie = new ZombieChoque(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CHOQUE", 1, 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
                 case "M_ALCANCE":
-                    zombie = new Zombie("hola",new JLabel(), zombie.getNombre(), "M_ALCANCE", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                    zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "M_ALCANCE", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                     break;
                 default:
-                    zombie = new Zombie("hola",new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
+                    zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
             }
             zombie.setLabel(label);
             label.setText(zombie.getTipo()+"");
+            cambiarImagenDeLabel(zombie.getImagen(), label);
             // Crear el thread
             ThreadZombie tz =  new ThreadZombie(zombie, this);
             zombies.add(tz);
@@ -188,7 +193,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         lstDefensas.setModel(modelo);
     }
     
-     
     //----------------------------------------------------GUI DE VENTANA------------------------------------------------------
     //Funcion no implementada
     public void pintarZonaSegura(){
@@ -274,7 +278,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         
     }
     //----------------------------------------------------GUI DE VENTANA------------------------------------------------------
-
+    
+    
+    //----------------------------------------------------GETS & SETS------------------------------------------------------
     //Get el arbol de la vida 
     public ThreadDefensa getTav() {
         return tav;
@@ -293,6 +299,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     public int getNivel() {
         return nivel;
     }
+    //----------------------------------------------------GETS & SETS------------------------------------------------------
+    
     
     //Revisa si la posX y posY, ya esta ocupada por algun personaje
     private boolean checkPosition(int posX,int posY){
@@ -337,6 +345,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         lstDefensas = new javax.swing.JList<>();
         btnQuitarDefensa = new javax.swing.JButton();
+        lblEspaciosDisponibes = new javax.swing.JLabel();
+        lblEspaciosDisponibe = new javax.swing.JLabel();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -391,6 +401,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
         });
 
+        lblEspaciosDisponibe.setText("Espacios:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -414,7 +426,11 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                             .addComponent(btnColocarDefensa)
                             .addGap(18, 18, 18)
                             .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblEspaciosDisponibe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -436,10 +452,17 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnColocarDefensa)
                             .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(121, 121, 121)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(lblEspaciosDisponibe, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(48, 48, 48)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -447,11 +470,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
 
     //Boton para iniciar la guerra
     private void btnIniciarGuerraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarGuerraActionPerformed
-        
         System.out.println("Tamaño del arreglo antes de iniciar: " + zombies.size());
         generarZombies(nivel*5+15);
         System.out.println("Tamaño del arreglo después de iniciar: " + zombies.size());
-
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie get = zombies.get(i);
             get.start();
@@ -469,7 +490,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Boton para colocar una defensa en el campo de juego
     private void btnColocarDefensaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarDefensaActionPerformed
         if(defensaParaColocar != null){
-                if(defensaParaColocar.getNombre()== "arbol" && arbolColocado){
+            if(defensaParaColocar.getNombre()== "arbol" && arbolColocado){
                 JOptionPane.showMessageDialog(pnlCampoJuego, "Error, arbol ya colocado", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }else{
@@ -479,11 +500,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     if(posX >= 4 && posX < 21 && posY >= 4 && posY < 21){
                         if(checkPosition(posX, posY)){
                             if (usedEspaces+defensaParaColocar.getEspacios() <= (nivel*5)+15){
-                                
-                            
                                 String tipoElegido = defensaParaColocar.getTipo();
                                 if(defensaParaColocar.getNombre().equals("arbol")){
-                                    
                                     arbolColocado = true;
                                     defensaParaColocar.setPosX(posX);
                                     defensaParaColocar.setPosY(posY);
@@ -493,36 +511,35 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                 Defensa defensa;
                                 switch (tipoElegido) {
                                     case "AEREO":
-                                        defensa = new DefensaAerea("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        defensa = new DefensaAerea(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "AEREO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         break;
                                     case "IMPACTO":
-                                        defensa = new DefensaImpacto("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        defensa = new DefensaImpacto(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "IMPACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         break;
                                     case "MULTIPLE":
                                         DefensaAtaqueMultiple defensaMultiple = (DefensaAtaqueMultiple)defensaParaColocar;
                                         repeticiones = defensaMultiple.getRepeticiones();
-                                        defensa = new DefensaAtaqueMultiple("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
+                                        defensa = new DefensaAtaqueMultiple(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY, repeticiones);
                                         break;
                                     case "CONTACTO":
                                         if (defensaParaColocar.getNombre().equals("arbol")) {
-                                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                            defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                             tav.setDefensa(defensa);                                            
                                         }else{
-                                            defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                            defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         }
                                         break;
                                     case "ALCANCE" :
-                                        defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                        defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         break;
                                    default :
-                                        defensa = new Defensa("imgs//arbolDeLaVida.png",new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
+                                        defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
                                 }
                                 JLabel label = new JLabel(defensa.getNombre()+ "");
+                                cambiarImagenDeLabel(defensa.getImagen(), label);
                                 label.setSize(25,25);
-                                label.setBackground(Color.BLUE);
                                 label.setLocation(posX*25, posY*25);
                                 label.setVisible(true);
-                                
                                 label.addMouseListener(new MouseAdapter() {
                                     @Override
                                     public void mouseEntered(MouseEvent e) {
@@ -533,14 +550,14 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                         label.setForeground(Color.BLACK);
                                     }
                                 });
-                                
-                                    defensa.setLabel(label);
+                                defensa.setLabel(label);
                                 ThreadDefensa td = new ThreadDefensa(defensa, this);
                                 defensas.add(td);
                                 pnlCampoJuego.add(label);
                                 pnlCampoJuego.revalidate();
                                 pnlCampoJuego.repaint();
                                 usedEspaces += defensa.getEspacios();
+                                lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));
                                 System.out.println("Espacios: "+defensa.getEspacios());
                                 System.out.println("Espacios disponibles: " + usedEspaces );
                                 
@@ -640,6 +657,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         tig.setIsRunnig(false);
         tig = new ThreadInGame(this);
         arbolColocado = false;
+        usedEspaces = 0;
+        lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));
     }
     
     public static void main(String args[]) {
@@ -657,6 +676,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblEspaciosDisponibe;
+    private javax.swing.JLabel lblEspaciosDisponibes;
     private javax.swing.JLabel lblPosX;
     private javax.swing.JLabel lblPosY;
     private javax.swing.JList<String> lstDefensas;
