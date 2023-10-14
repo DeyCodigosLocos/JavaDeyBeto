@@ -32,6 +32,8 @@ public class ZombieChoque extends Zombie{
                 }
             }
         }else{
+            this.getAtaques().add(getNombre() + " " + getPosX() + "," + getPosX() + " ataco a " + getObjetivo().getDefensa().getNombre() + " " + 
+            getObjetivo().getDefensa().getPosX() + "," +getObjetivo().getDefensa().getPosY()+ " ,tenia " + getObjetivo().getDefensa().getVida() + " de vida y lo dejo a 0 vida");
             getObjetivo().getDefensa().morir();
             getObjetivo().setIsRunning(false);
             ventana.cambiarImagenDeLabel("imgs//ruinas.png",getObjetivo().getDefensa().getLabel());

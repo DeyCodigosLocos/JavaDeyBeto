@@ -38,6 +38,8 @@ public class DefensaAerea extends Defensa{
                 }
             }
             if (inRange(getObjetivo().getZombie().getPosX(),getObjetivo().getZombie().getPosY())){
+                this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getZombie().getNombre()+ " " + 
+                getObjetivo().getZombie().getPosX() + "," +getObjetivo().getZombie().getPosY()+" ,tenia " +getObjetivo().getZombie().getVida() + " de vida y lo dejo a " + (this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo()));
                 getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
                 getObjetivo().getZombie().getLabel().setText(getObjetivo().getZombie().getVida()+"");
                 if(getObjetivo().getZombie().isDead()){

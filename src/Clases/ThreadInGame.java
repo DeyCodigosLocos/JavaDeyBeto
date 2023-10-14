@@ -21,9 +21,9 @@ public class ThreadInGame extends Thread implements Serializable {
     public void run() {
         while(isRunnig){
             try {
-                System.out.println("Nivel actual: " + ventana.getNivel());
+                //System.out.println("Nivel actual: " + ventana.getNivel());
                 if(ventana.allZombiesDead()){
-                    System.out.println("TODOS LOS ZOMBIES ESTAN MUERTOS");
+                    //System.out.println("TODOS LOS ZOMBIES ESTAN MUERTOS");
                     ventana.stopThreads();
                     ventana.getZombies().clear();
                     ventana.getDefensas().clear();
@@ -31,7 +31,7 @@ public class ThreadInGame extends Thread implements Serializable {
                 }
                       
                  if(ventana.getTav().getDefensa().isDead()){
-                    System.out.println("TODOS LAS DEFENSAS ESTAN MUERTAS");
+                    //System.out.println("TODOS LAS DEFENSAS ESTAN MUERTAS");
                     ventana.stopThreads();
                     ventana.getZombies().clear();
                     ventana.getDefensas().clear();
@@ -39,7 +39,7 @@ public class ThreadInGame extends Thread implements Serializable {
                 }
               
                     
-                sleep(1000);
+                sleep(200);
             } catch (InterruptedException ex) {
                 
             }

@@ -108,6 +108,8 @@ public class Zombie extends Personaje implements Serializable{
                 }
             }
         }else{
+            this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getDefensa().getNombre()+ " " + 
+            getObjetivo().getDefensa().getPosX() + "," +getObjetivo().getDefensa().getPosY()+" ,tenia " +getObjetivo().getDefensa().getVida() + " de vida y lo dejo a " + (this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo()));
             getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
             getObjetivo().getDefensa().getLabel().setText(getObjetivo().getDefensa().getVida()+"");
             if(getObjetivo().getDefensa().isDead()){

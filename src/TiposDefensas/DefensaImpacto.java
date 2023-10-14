@@ -17,6 +17,8 @@ public class DefensaImpacto extends Defensa {
         if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
             setObjetivo(getCloserZombie(ventana.getZombies(),false));
         }else{
+            this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getZombie().getNombre()+ " " +
+            getObjetivo().getZombie().getPosX() + "," +getObjetivo().getZombie().getPosY()+" ,tenia " +getObjetivo().getZombie().getVida() + " de vida y lo dejo a 0 de vida");
             getObjetivo().getZombie().morir();
             getObjetivo().setIsRunning(false);
             ventana.cambiarImagenDeLabel("imgs//zombieMuerto.png",getObjetivo().getZombie().getLabel());

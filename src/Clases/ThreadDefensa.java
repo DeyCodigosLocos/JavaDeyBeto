@@ -6,10 +6,6 @@ import java.io.Serializable;
 
 import static java.lang.Thread.sleep;
 
-/**
- *
- * @author X
- */
 public class ThreadDefensa extends Thread implements Serializable{
     CampoDeBatalla ventana;
     boolean isRunning = true;
@@ -25,6 +21,7 @@ public class ThreadDefensa extends Thread implements Serializable{
     public void run() {
         while(isRunning){
             try {
+                System.out.println(defensa.getTipo());
                 switch (defensa.getTipo()) {
                     case "AEREO":
                         DefensaAerea defAereo = (DefensaAerea)defensa;

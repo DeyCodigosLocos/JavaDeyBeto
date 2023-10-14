@@ -17,9 +17,7 @@ public class ZombieVolador extends Zombie {
     public void ataque(CampoDeBatalla ventana){
         ArrayList<Point> puntos = sortPossibleMoves(setPossibleMoves(1),ventana.getTav().getDefensa().getPosX(), ventana.getTav().getDefensa().getPosY());
         if (getObjetivo() == null || getObjetivo().getDefensa().isDead() || !inRange(getObjetivo().getDefensa().getPosX(),getObjetivo().getDefensa().getPosY())){
-            
             setObjetivo(getCloserDefense(ventana.getDefensas(), true));
-            
             if(getObjetivo() == null || !inRange(getObjetivo().getDefensa().getPosX(),getObjetivo().getDefensa().getPosY())){
                 for (int i = 0; i < puntos.size(); i++) {
                     Point get = puntos.get(i);
@@ -31,6 +29,8 @@ public class ZombieVolador extends Zombie {
                 }
             }
         }else{
+            this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getDefensa().getNombre()+ " " + 
+            getObjetivo().getDefensa().getPosX() + "," +getObjetivo().getDefensa().getPosY()+" ,tenia " +getObjetivo().getDefensa().getVida() + " de vida y lo dejo a " + (this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo()));
             getObjetivo().getDefensa().setVida(this.getObjetivo().getDefensa().getVida()-this.getDanoPorSegundo());
             getObjetivo().getDefensa().getLabel().setText(getObjetivo().getDefensa().getVida()+"");
             if(getObjetivo().getDefensa().isDead()){

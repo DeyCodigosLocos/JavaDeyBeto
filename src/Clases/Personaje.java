@@ -94,6 +94,16 @@ public class Personaje implements Serializable{
     public ArrayList<String> getAtaques() {
         return ataques;
     }
+    
+    public String getBiracora(){
+        String registro = "";
+        registro += this.nombre + "\n";
+        for (int i = 0; i < ataques.size(); i++) {
+            String get = ataques.get(i);
+            registro += get + "\n";
+        }
+        return registro;
+    }
 
     public int getPosX() {
         return posX;

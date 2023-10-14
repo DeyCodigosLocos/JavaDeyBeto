@@ -50,8 +50,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         refreshDefensesListBox(personajeDefensa);
         lblEspaciosDisponibes.setText("0/"+((nivel*5)+15));
         lblEspaciosDisponibes.setLocation(lblEspaciosDisponibes.getLocation().x, 225);
-        System.out.println("Zombies arreglo tamanno: " + personajeZombie.size());
-        System.out.println("Cabe zombies test: " + cabeZombie(5));
         
     }
     
@@ -82,14 +80,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     //Funcion que carga todos las defensas que se crearon
     private void cargarDefensas(){
-        System.out.println("");
         File carpeta = new File("Defensas");
         if (carpeta.isDirectory()) {
             File[] archivos = carpeta.listFiles();
             if (archivos != null) {
                 for (File archivo : archivos) {
                     if (archivo.isFile()) {
-                        System.out.println(archivo.getName());
                         Defensa defensa = ((Defensa)FileManager.readObject("Defensas//"+archivo.getName()));
                         if (defensa == null)
                             System.out.println("me cago en las defensas");
@@ -108,14 +104,12 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     //Funcion que carga todos los zombies que se crearon
     private void cargarZombies(){
-        System.out.println("");
         File carpeta = new File("Zombies");
         if (carpeta.isDirectory()) {
             File[] archivos = carpeta.listFiles();
             if (archivos != null) {
                 for (File archivo : archivos) {
                     if (archivo.isFile()) {
-                        System.out.println(archivo.getName());
                         Zombie zombie = (Zombie)FileManager.readObject("Zombies//" + archivo.getName());
                         if (zombie != null){
                             System.out.println("zombie se cargo");
@@ -171,18 +165,30 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         zombie = new Zombie(zombie.getImagen(),new JLabel(), zombie.getNombre(), "CONTACTO", zombie.getAlcance(), 1, zombie.getNivelAparicion(), zombie.getEspacios(), zombie.getDanoPorSegundo(), zombie.getVida(), label.getLocation().x/25, label.getLocation().y/25);
                 }
                 zombie.setLabel(label);
-                label.setText(zombie.getTipo()+"");
-                cambiarImagenDeLabel(zombie.getImagen(), label);
+                label.setText(zombie.getVida()+"");
+                //cambiarImagenDeLabel(zombie.getImagen(), label);
                 // Crear el thread
                 ThreadZombie tz =  new ThreadZombie(zombie, this);
                 zombies.add(tz);
                 label.addMouseListener(new MouseAdapter() {
                     @Override
-                    public void mouseEntered(MouseEvent e) {
-                        label.setForeground(Color.RED);
+                    public void mouseClicked(MouseEvent e) {
+                        JFrame frame = new JFrame("Bitacora de Actividad");
+                        frame.setSize(400, 400);
+                        JTextArea textArea = new JTextArea(10, 30);
+                        
+                        textArea.setBackground(Color.LIGHT_GRAY);
+                        textArea.setLineWrap(true);
+                        textArea.setWrapStyleWord(true);
+                        String res = tz.getZombie().getBiracora();
+                        textArea.setText(res);
+                        frame.add(textArea);
+                        frame.setVisible(true);
+                        
+                        
                     }
                     @Override
-                    public void mouseExited(MouseEvent e) {
+                    public void mousePressed(MouseEvent e){
                         label.setForeground(Color.BLACK);
                     }
                 });
@@ -497,7 +503,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             ThreadDefensa get = defensas.get(i);
             get.start();
         }
-        
         tig.start();
         btnIniciarGuerra.setEnabled(false);
         
@@ -517,6 +522,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         if(checkPosition(posX, posY)){
                             if (usedEspaces+defensaParaColocar.getEspacios() <= (nivel*5)+15){
                                 String tipoElegido = defensaParaColocar.getTipo();
+                                System.out.println("TIPO ELEGIDO: " + tipoElegido);
                                 if(defensaParaColocar.getNombre().equals("arbol")){
                                     arbolColocado = true;
                                     defensaParaColocar.setPosX(posX);
@@ -545,21 +551,33 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                             defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "CONTACTO", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         }
                                         break;
-                                    case "ALCANCE" :
-                                        defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "MULTIPLE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
+                                    case "M_ALCANCE" :
+                                        defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "M_ALCANCE", defensaParaColocar.getAlcance(), defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), defensaParaColocar.getDanoPorSegundo(), defensaParaColocar.getVida(), posX, posY);
                                         break;
                                    default :
                                         defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
                                 }
-                                JLabel label = new JLabel(defensa.getNombre()+ "");
-                                cambiarImagenDeLabel(defensa.getImagen(), label);
+                                JLabel label = new JLabel(defensa.getVida()+ "");
+                                //cambiarImagenDeLabel(defensa.getImagen(), label);
                                 label.setSize(25,25);
                                 label.setLocation(posX*25, posY*25);
                                 label.setVisible(true);
                                 label.addMouseListener(new MouseAdapter() {
                                     @Override
-                                    public void mouseEntered(MouseEvent e) {
-                                        label.setForeground(Color.RED);
+                                    public void mouseClicked(MouseEvent e) {
+                                        JFrame frame = new JFrame("Bitacora de Actividad");
+                                        frame.setSize(400, 400);
+                                        JTextArea textArea = new JTextArea(10, 30);
+
+                                        textArea.setBackground(Color.LIGHT_GRAY);
+                                        textArea.setLineWrap(true);
+                                        textArea.setWrapStyleWord(true);
+                                        String res = defensa.getBiracora();
+                                        textArea.setText(res);
+                                        frame.add(textArea);
+                                        frame.setVisible(true);
+
+
                                     }
                                     @Override
                                     public void mouseExited(MouseEvent e) {
@@ -593,7 +611,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }//GEN-LAST:event_btnColocarDefensaActionPerformed
 
     private void txfPosYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosYActionPerformed
-        System.out.println("hola");
+        
     }//GEN-LAST:event_txfPosYActionPerformed
     
     private void lstDefensasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstDefensasMouseClicked

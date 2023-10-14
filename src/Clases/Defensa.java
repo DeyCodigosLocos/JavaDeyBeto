@@ -77,6 +77,9 @@ public class Defensa extends Personaje implements Serializable{
         if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
             setObjetivo(getCloserZombie(ventana.getZombies(), false));
         }else{
+            
+            this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getZombie().getNombre()+ " " + 
+            getObjetivo().getZombie().getPosX() + "," +getObjetivo().getZombie().getPosY()+" ,tenia " +getObjetivo().getZombie().getVida() + " de vida y lo dejo a " + (this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo()));
             getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
             getObjetivo().getZombie().getLabel().setText(getObjetivo().getZombie().getVida()+"");
             if(getObjetivo().getZombie().isDead()){

@@ -43,8 +43,6 @@ public class ThreadZombie extends Thread implements Serializable{
                     
                 }
                 sleep(1000);
-                //ventana.imprimirActividad();
-                System.out.println("\n\n");
             } catch (InterruptedException ex) {
                 
             }
