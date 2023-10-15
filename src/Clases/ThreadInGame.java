@@ -30,8 +30,7 @@ public class ThreadInGame extends Thread implements Serializable {
                     ventana.getDefensas().clear();
                     ventana.finishLevel(true);
                 }
-                      
-                 if(ventana.getTav().getDefensa().isDead()){
+                if(ventana.getTav().getDefensa().isDead()){
                     //System.out.println("TODOS LAS DEFENSAS ESTAN MUERTAS");
                     ventana.setBitacoraNivel(ventana.getBitacoraCompleta());
                     ventana.stopThreads();
@@ -39,8 +38,6 @@ public class ThreadInGame extends Thread implements Serializable {
                     ventana.getDefensas().clear();
                     ventana.finishLevel(false);
                 }
-              
-                    
                 sleep(200);
             } catch (InterruptedException ex) {
                 

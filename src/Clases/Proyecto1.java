@@ -2,30 +2,81 @@ package Clases;
 
 import GUI.CampoDeBatalla;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 
 public class Proyecto1 {
 
     public static void main(String[] args) {
-        // TODO code application logic here
-          Point p1 = new Point();
-          JLabel label = new JLabel();
-          label.setLocation(100, 100);
-          ArrayList<ThreadZombie> zombies = new ArrayList<ThreadZombie>();
-          Zombie zombie = new Zombie("hola",label, "alfredito", "contacto", 2, 1, 1, 1, 1, 5, 5, 1);
-          ThreadZombie tz = new ThreadZombie(zombie, new CampoDeBatalla());
-          zombies.add(tz);
-//          System.out.println(zombie.getDistance(2, 6, 1, 3));
-//          zombie.printPoints(zombie.setPossibleMoves(2));
-//          System.out.println("\n\n\n\n\n");
-          //zombie.printPoints(zombie.getEsquinas());
-          Defensa defensa = new Defensa("hola",label, "amanda", "contacto", 2, 1, 1, 1, 1, 1, 2, 2);
-           System.out.println("\nPRUEBA:\n");
-          defensa.printPoints(defensa.getEsquinas());
-          System.out.println(defensa.getCloserZombie(zombies,false).getZombie().getNombre());
-   
+        
+        JFrame frame = new JFrame("FileChooser Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton openButton = new JButton("Abrir Archivo");
+        JButton saveButton = new JButton("Guardar Archivo");
+        final JLabel selectedFileLabel = new JLabel();
+
+        openButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    selectedFileLabel.setText("Archivo seleccionado: " + selectedFilePath);
+                } else {
+                    selectedFileLabel.setText("Ningún archivo seleccionado");
+                }
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showSaveDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String selectedFilePath = selectedFile.getAbsolutePath();
+                    selectedFileLabel.setText("Archivo guardado en: " + selectedFilePath);
+
+                    // Ejemplo: Escribir algo en el archivo guardado
+                    try {
+                        FileWriter writer = new FileWriter(selectedFile);
+                        writer.write("Contenido del archivo guardado.");
+                        writer.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    selectedFileLabel.setText("No se guardó ningún archivo.");
+                }
+            }
+        });
+
+        JPanel panel = new JPanel();
+        panel.add(openButton);
+        panel.add(saveButton);
+        panel.add(selectedFileLabel);
+
+        frame.add(panel);
+        frame.setSize(400, 150);
+        frame.setVisible(true);
+          
+          
+          
     }
 
 }
