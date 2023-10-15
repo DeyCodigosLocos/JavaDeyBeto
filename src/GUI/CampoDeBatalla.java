@@ -27,6 +27,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     ArrayList<Defensa> personajeDefensa;
     ArrayList<Zombie> personajeZombie;
     Defensa defensaParaColocar;
+    private String bitacoraNivel;
     
     public CampoDeBatalla(){
         //this.setLocationRelativeTo(null);
@@ -52,6 +53,10 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         lblEspaciosDisponibes.setLocation(lblEspaciosDisponibes.getLocation().x, 225);
         
     }
+
+    public void setBitacoraNivel(String bitacoraNivel) {
+        this.bitacoraNivel = bitacoraNivel;
+    }
     
     public ThreadDefensa buscarDefensa(int posX,int posY){
         for (int i = 0; i < defensas.size(); i++) {
@@ -65,16 +70,16 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Detiene todos los threads del campo de juego
     public void stopThreads(){
         for (int i = 0; i < zombies.size(); i++) {
-           pnlCampoJuego.remove(zombies.get(i).getZombie().getLabel());
-           pnlCampoJuego.revalidate();
-           pnlCampoJuego.repaint();
-           zombies.get(i).setIsRunning(false);
+            pnlCampoJuego.remove(zombies.get(i).getZombie().getLabel());
+            pnlCampoJuego.revalidate();
+            pnlCampoJuego.repaint();
+            zombies.get(i).setIsRunning(false);
         }
         for (int i = 0; i < defensas.size(); i++) {
-           pnlCampoJuego.remove(defensas.get(i).getDefensa().getLabel());
-           pnlCampoJuego.revalidate();
-           pnlCampoJuego.repaint();
-           zombies.get(i).setIsRunning(false);
+            pnlCampoJuego.remove(defensas.get(i).getDefensa().getLabel());
+            pnlCampoJuego.revalidate();
+            pnlCampoJuego.repaint();
+            defensas.get(i).setIsRunning(false);
         }
     }
     
@@ -135,12 +140,30 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         return false;
     }
     
+    public void upgradePersonajes(int cant){
+        int actual = 0;
+        for (int i = 0; i < personajeDefensa.size(); i++){
+            Defensa defensa = personajeDefensa.get(i);
+            actual = ((defensa.getVida()/100)+1)*((new Random().nextInt(16)+5))*cant;
+            defensa.setVida(defensa.getVida()+actual);
+            actual = ((defensa.getDanoPorSegundo()/100)+1)*((new Random().nextInt(16)+5))*cant;
+            defensa.setDanoPorsegundo(defensa.getDanoPorSegundo()+actual);
+        }
+        for (int i = 0; i < personajeZombie.size(); i++){
+            Zombie zombie = personajeZombie.get(i);
+            actual = ((zombie.getVida()/100)+1)*((new Random().nextInt(16)+5))*cant;
+            zombie.setVida(zombie.getVida()+actual);
+            actual = ((zombie.getDanoPorSegundo()/100)+1)*((new Random().nextInt(16)+5))*cant;
+            zombie.setDanoPorsegundo(zombie.getDanoPorSegundo()+actual);
+        }
+    }
+    
     //Genera aleatoriamente los zombies en el campo de batalla
     public void generarZombies(int size){
         int espaciosOcupados = 0;
-        System.out.println("negritos: " + (size-espaciosOcupados));
+        
         while(espaciosOcupados < size && cabeZombie(size-espaciosOcupados)){
-            System.out.println("Espacios restantes zombies: " + (size-espaciosOcupados));
+            
             JLabel label =  new JLabel("");
             label.setSize(25,25);
             label.setBackground(Color.WHITE);
@@ -173,19 +196,19 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                 label.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        JFrame frame = new JFrame("Bitacora de Actividad");
+                        JFrame frame = new JFrame("Bitacora de Actividad del Zombie");
                         frame.setSize(400, 400);
                         JTextArea textArea = new JTextArea(10, 30);
-                        
                         textArea.setBackground(Color.LIGHT_GRAY);
                         textArea.setLineWrap(true);
                         textArea.setWrapStyleWord(true);
-                        String res = tz.getZombie().getBiracora();
+                        System.out.println("pinga");
+                        String res = tz.getZombie().getBitacora();
                         textArea.setText(res);
                         frame.add(textArea);
+                        JScrollPane scrollPane = new JScrollPane(textArea);
+                        frame.add(scrollPane);
                         frame.setVisible(true);
-                        
-                        
                     }
                     @Override
                     public void mousePressed(MouseEvent e){
@@ -323,7 +346,17 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     }
     //----------------------------------------------------GETS & SETS------------------------------------------------------
     
-    
+    public String getBitacoraCompleta(){
+        String res = "-----------Bitacora de Cada Zombie---------------\n\n\n";
+        for (int i = 0; i < zombies.size(); i++) {
+            res += zombies.get(i).getZombie().getBitacora();
+        }
+        res += "\n\n\n-----------Bitacora de Cada Defensa---------------\n\n\n";
+        for (int i = 0; i < defensas.size(); i++) {
+            res += defensas.get(i).getDefensa().getBitacora();
+        }
+        return res;
+    }
     //Revisa si la posX y posY, ya esta ocupada por algun personaje
     private boolean checkPosition(int posX,int posY){
         for (int i = 0; i < zombies.size(); i++) {
@@ -505,6 +538,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         }
         tig.start();
         btnIniciarGuerra.setEnabled(false);
+        //btnColocarDefensa.setEnabled(false);
+        //sbtnQuitarDefensa.setEnabled(false);
         
     }//GEN-LAST:event_btnIniciarGuerraActionPerformed
 
@@ -562,29 +597,30 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                 label.setSize(25,25);
                                 label.setLocation(posX*25, posY*25);
                                 label.setVisible(true);
+                                defensa.setLabel(label);
                                 label.addMouseListener(new MouseAdapter() {
                                     @Override
                                     public void mouseClicked(MouseEvent e) {
-                                        JFrame frame = new JFrame("Bitacora de Actividad");
+                                        JFrame frame = new JFrame("Bitacora de Actividad de la Defensa");
                                         frame.setSize(400, 400);
                                         JTextArea textArea = new JTextArea(10, 30);
-
                                         textArea.setBackground(Color.LIGHT_GRAY);
                                         textArea.setLineWrap(true);
                                         textArea.setWrapStyleWord(true);
-                                        String res = defensa.getBiracora();
+                                        //defensa.verAtaques();
+                                        String res = defensa.getBitacora();
                                         textArea.setText(res);
+                                        JScrollPane scrollPane = new JScrollPane(textArea);
+                                        frame.add(scrollPane);
                                         frame.add(textArea);
                                         frame.setVisible(true);
-
-
                                     }
                                     @Override
                                     public void mouseExited(MouseEvent e) {
                                         label.setForeground(Color.BLACK);
                                     }
                                 });
-                                defensa.setLabel(label);
+                                
                                 ThreadDefensa td = new ThreadDefensa(defensa, this);
                                 defensas.add(td);
                                 pnlCampoJuego.add(label);
@@ -592,10 +628,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                 pnlCampoJuego.repaint();
                                 usedEspaces += defensa.getEspacios();
                                 lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));
-                                System.out.println("Espacios: "+defensa.getEspacios());
-                                System.out.println("Espacios disponibles: " + usedEspaces );
-                                
-                                
+                               
                             }else
                                 JOptionPane.showMessageDialog(pnlCampoJuego, "Error, espacios insuficientes. Espacios restantes: " + (((nivel*5)+15)-usedEspaces), "Error", JOptionPane.ERROR_MESSAGE);
                         }else
@@ -651,10 +684,50 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     
     public void finishLevel(boolean winState){
         if (winState){
-            JOptionPane.showMessageDialog(null, "Has ganado el nivel, puede continuar con el siguiente.", "Felicidades", JOptionPane.INFORMATION_MESSAGE);
-            //refreshLevel(nivel+1);
+            
+            String[] opciones = { "Si", "No"};
+            int seleccion = JOptionPane.showOptionDialog(
+            null,
+            "¿Desea ver la bitacora? Avanzara nivel de todas formas...",
+            "Felicidades, nivel superado",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+            );
+            switch (seleccion) {
+                case 0:
+                    JFrame frame = new JFrame("Bitacora de Actividad del Nivel");
+                    frame.setSize(400, 400);
+                    JTextArea textArea = new JTextArea(10, 30);
+                    textArea.setBackground(Color.LIGHT_GRAY);
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+                    String res = bitacoraNivel;
+                    textArea.setText(res);
+                    frame.add(textArea);
+                    frame.setVisible(true);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    frame.add(scrollPane);
+                    upgradePersonajes(1);
+                    refreshLevel(nivel+1);
+                    break;
+                case 1:
+                    upgradePersonajes(1);
+                    refreshLevel(nivel+1);
+                    break;
+                default: // El usuario cerró el cuadro de diálogo
+                    upgradePersonajes(1);
+                    refreshLevel(nivel+1);
+            }
+            
+            
+            
+            
+            
         }else{
-            String[] opciones = {"Repetir nivel", "Siguiente nivel"};
+            String[] opciones = {"Repetir nivel", "Siguiente nivel", "Ver Bitacora"};
             int seleccion = JOptionPane.showOptionDialog(
             null,
             "Ingrese la opcion para continuar",
@@ -673,8 +746,25 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                     refreshLevel(nivel);
                     break;
                 case 1:
+                    upgradePersonajes(1);
                     refreshLevel(nivel+1);
                     break;
+                case 2:
+                    JFrame frame = new JFrame("Bitacora de Actividad del Nivel");
+                    frame.setSize(400, 400);
+                    JTextArea textArea = new JTextArea(10, 30);
+                    textArea.setBackground(Color.LIGHT_GRAY);
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+                    String res = bitacoraNivel;
+                    textArea.setText(res);
+                    frame.add(textArea);
+                    frame.setVisible(true);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    frame.add(scrollPane);
+                    refreshLevel(nivel);
+                    break;
+
                 default: // El usuario cerró el cuadro de diálogo
                     refreshLevel(nivel);
             }
@@ -690,6 +780,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         refreshDefensesListBox(personajeDefensa);
         tig.setIsRunnig(false);
         tig = new ThreadInGame(this);
+        bitacoraNivel = "";
         arbolColocado = false;
         usedEspaces = 0;
         lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));

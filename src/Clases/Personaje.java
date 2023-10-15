@@ -95,14 +95,23 @@ public class Personaje implements Serializable{
         return ataques;
     }
     
-    public String getBiracora(){
+    public String getBitacora(){
         String registro = "";
-        registro += this.nombre + "\n";
-        for (int i = 0; i < ataques.size(); i++) {
-            String get = ataques.get(i);
+        registro += "\n---------"+this.nombre + " ("+getPosX()+","+getPosY()+")--------- \n";
+        
+        for (int i = 0; i < getAtaques().size(); i++) {
+            String get = getAtaques().get(i);
             registro += get + "\n";
         }
+        registro+="-----------------------------------------\n";
         return registro;
+    }
+    
+    public void verAtaques(){
+        System.out.println("\n\n--------------- Ataques ------------\n\n");
+        for (int i = 0; i < getAtaques().size(); i++) 
+            System.out.println(getAtaques().get(i));
+        System.out.println("----------------------------------------------------");
     }
 
     public int getPosX() {
@@ -150,12 +159,12 @@ public class Personaje implements Serializable{
     public boolean isTraslape(Point punto, ArrayList<ThreadZombie> zombies, ArrayList<ThreadDefensa> defensas){
         for (int i = 0; i < defensas.size(); i++) {
             ThreadDefensa defensa = defensas.get(i);
-            if(defensa.getDefensa().getPosX() == punto.x && defensa.getDefensa().getPosY() == punto.y)
+            if(defensa.getDefensa().getPosX() == punto.x && defensa.getDefensa().getPosY() == punto.y && !defensa.getDefensa().isDead())
                 return true;
         }
         for (int i = 0; i < zombies.size(); i++) {
             ThreadZombie zombie = zombies.get(i);
-            if(zombie.getZombie().getPosX() == punto.x && zombie.getZombie().getPosY() == punto.y)
+            if(zombie.getZombie().getPosX() == punto.x && zombie.getZombie().getPosY() == punto.y && !zombie.getZombie().isDead())
                 return true;  
         }
         return false;
@@ -236,8 +245,8 @@ public class Personaje implements Serializable{
     
     public void morir(){
         this.vida = 0;
-        this.setPosX(-1);
-        this.setPosY(-1);
+        //this.setPosX(-1);
+        //this.setPosY(-1);
     }
     
 }

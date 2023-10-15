@@ -21,7 +21,8 @@ public class ThreadDefensa extends Thread implements Serializable{
     public void run() {
         while(isRunning){
             try {
-                System.out.println(defensa.getTipo());
+                //System.out.println(defensa.getTipo());
+                //getDefensa().verAtaques();
                 switch (defensa.getTipo()) {
                     case "AEREO":
                         DefensaAerea defAereo = (DefensaAerea)defensa;
@@ -41,7 +42,6 @@ public class ThreadDefensa extends Thread implements Serializable{
                         break;
                     default:
                         defensa.ataque(ventana);
-                    
                 }
                 
                 sleep(1000);
@@ -51,7 +51,7 @@ public class ThreadDefensa extends Thread implements Serializable{
             
         } 
     }
-
+    
     public CampoDeBatalla getVentana() {
         return ventana;
     }

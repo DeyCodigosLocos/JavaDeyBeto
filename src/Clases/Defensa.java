@@ -36,7 +36,7 @@ public class Defensa extends Personaje implements Serializable{
     public ArrayList<String> getAtaques() {
         return ataques;
     }
-
+    
     public ThreadZombie getObjetivo() {
         return objetivo;
     }
@@ -44,7 +44,6 @@ public class Defensa extends Personaje implements Serializable{
     public void setObjetivo(ThreadZombie objetivo) {
         this.objetivo = objetivo;
     }
-    
     
     public JLabel getLabel() {
         return label;
@@ -71,13 +70,10 @@ public class Defensa extends Personaje implements Serializable{
         return null;
     }
     
-    
-    
     public void ataque(CampoDeBatalla ventana){
         if (getObjetivo() == null || getObjetivo().getZombie().isDead()){
             setObjetivo(getCloserZombie(ventana.getZombies(), false));
         }else{
-            
             this.getAtaques().add(getNombre()+" " +getPosX()+","+getPosY()+" ataco a " + getObjetivo().getZombie().getNombre()+ " " + 
             getObjetivo().getZombie().getPosX() + "," +getObjetivo().getZombie().getPosY()+" ,tenia " +getObjetivo().getZombie().getVida() + " de vida y lo dejo a " + (this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo()));
             getObjetivo().getZombie().setVida(this.getObjetivo().getZombie().getVida()-this.getDanoPorSegundo());
