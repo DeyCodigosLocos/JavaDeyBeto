@@ -7,16 +7,13 @@ import TiposZombies.*;
 import filemanager.FileManager;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
+import java.util.logging.*;
 
 
 public class CampoDeBatalla extends javax.swing.JFrame {
@@ -46,10 +43,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         initComponents();
         generaMatriz();
         pintarZonaSegura();
-        
-        
         tav = new ThreadDefensa(arbolVida, this);
         this.nivel = 1;
+        lblNivelActual.setText(this.nivel+"");
         btnIniciarGuerra.setEnabled(false);
         cargarZombies();
         cargarDefensas();
@@ -197,7 +193,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                 }
                 zombie.setLabel(label);
                 label.setText(zombie.getVida()+"");
-                //cambiarImagenDeLabel(zombie.getImagen(), label);
+                cambiarImagenDeLabel(zombie.getImagen(), label);
                 // Crear el thread
                 ThreadZombie tz =  new ThreadZombie(zombie, this);
                 zombies.add(tz);
@@ -309,12 +305,13 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     //Cambia la imagen de un JLabel
     public void cambiarImagenDeLabel(String ruta,JLabel label){
         ImageIcon icon = new ImageIcon(ruta);
-        icon = resizeGifIcon(icon, 32, 32);
+        icon = resizeGifIcon(icon, 25, 25);
         label.setIcon(icon);
-        label.setHorizontalAlignment((int) JLabel.CENTER_ALIGNMENT);
+        // Establecer alineación horizontal y vertical para centrar
+        label.setHorizontalAlignment(JLabel.LEADING);
         label.setVerticalAlignment(JLabel.CENTER);
-        GridBagLayout layout = new GridBagLayout();
-        label.setLayout(layout);
+        // Asegurarse de que el layout del JLabel sea nulo para que el icono se centre correctamente
+        label.setLayout(null);
         
         
     }
@@ -412,6 +409,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         lblEspaciosDisponibe = new javax.swing.JLabel();
         btnGuardar = new javax.swing.JButton();
         btnCargar = new javax.swing.JButton();
+        lblNivel = new javax.swing.JLabel();
+        lblNivelActual = new javax.swing.JLabel();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -482,6 +481,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             }
         });
 
+        lblNivel.setText("Nivel:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -489,40 +490,38 @@ public class CampoDeBatalla extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(btnColocarDefensa)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(lblEspaciosDisponibe)
-                                            .addGap(30, 30, 30))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addComponent(btnGuardar)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                    .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnCargar))
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(116, 116, 116))))
+                        .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btnGuardar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCargar))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btnColocarDefensa)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(lblEspaciosDisponibe)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnIniciarGuerra, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblNivel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblNivelActual, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -533,7 +532,9 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                         .addComponent(pnlCampoJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnIniciarGuerra)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblNivel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblNivelActual, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(39, 39, 39)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblPosX, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -543,23 +544,20 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                             .addComponent(lblPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txfPosY, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnColocarDefensa)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(lblEspaciosDisponibe, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnCargar))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(btnGuardar))))
-                            .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnColocarDefensa)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnQuitarDefensa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnIniciarGuerra)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEspaciosDisponibes, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblEspaciosDisponibe, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnGuardar)
+                            .addComponent(btnCargar))
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15))))
         );
@@ -637,7 +635,7 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                         defensa = new Defensa(defensaParaColocar.getImagen(),new JLabel(), defensaParaColocar.getNombre(), "BLOQUE", 0, defensaParaColocar.getNivel(), defensaParaColocar.getNivelAparicion(), defensaParaColocar.getEspacios(), 0, defensaParaColocar.getVida(), posX, posY);
                                 }
                                 JLabel label = new JLabel(defensa.getVida()+ "");
-                                //cambiarImagenDeLabel(defensa.getImagen(), label);
+                                cambiarImagenDeLabel(defensa.getImagen(), label);
                                 label.setSize(25,25);
                                 label.setLocation(posX*25, posY*25);
                                 label.setVisible(true);
@@ -651,7 +649,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                         textArea.setBackground(Color.LIGHT_GRAY);
                                         textArea.setLineWrap(true);
                                         textArea.setWrapStyleWord(true);
-                                        //defensa.verAtaques();
                                         String res = defensa.getBitacora();
                                         textArea.setText(res);
                                         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -672,7 +669,6 @@ public class CampoDeBatalla extends javax.swing.JFrame {
                                 pnlCampoJuego.repaint();
                                 usedEspaces += defensa.getEspacios();
                                 lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));
-                               
                             }else
                                 JOptionPane.showMessageDialog(pnlCampoJuego, "Error, espacios insuficientes. Espacios restantes: " + (((nivel*5)+15)-usedEspaces), "Error", JOptionPane.ERROR_MESSAGE);
                         }else
@@ -897,6 +893,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
         bitacoraNivel = "";
         arbolColocado = false;
         usedEspaces = 0;
+        lblNivelActual.setText(this.nivel+"");
+        
         lblEspaciosDisponibes.setText(usedEspaces+"/"+((nivel*5)+15));
     }
     
@@ -919,6 +917,8 @@ public class CampoDeBatalla extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblEspaciosDisponibe;
     private javax.swing.JLabel lblEspaciosDisponibes;
+    private javax.swing.JLabel lblNivel;
+    private javax.swing.JLabel lblNivelActual;
     private javax.swing.JLabel lblPosX;
     private javax.swing.JLabel lblPosY;
     private javax.swing.JList<String> lstDefensas;

@@ -13,66 +13,61 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 
 public class Proyecto1 {
 
     public static void main(String[] args) {
         
-        JFrame frame = new JFrame("FileChooser Example");
+        // Crear un nuevo JFrame
+        JFrame frame = new JFrame("Barra de Progreso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 100);
 
-        JButton openButton = new JButton("Abrir Archivo");
-        JButton saveButton = new JButton("Guardar Archivo");
-        final JLabel selectedFileLabel = new JLabel();
+        // Crear una barra de progreso
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
 
-        openButton.addActionListener(new ActionListener() {
+        // Crear un botón para iniciar la barra de progreso
+        JButton startButton = new JButton("Iniciar");
+        startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int returnValue = fileChooser.showOpenDialog(null);
-
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    selectedFileLabel.setText("Archivo seleccionado: " + selectedFilePath);
-                } else {
-                    selectedFileLabel.setText("Ningún archivo seleccionado");
-                }
-            }
-        });
-
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int returnValue = fileChooser.showSaveDialog(null);
-
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    String selectedFilePath = selectedFile.getAbsolutePath();
-                    selectedFileLabel.setText("Archivo guardado en: " + selectedFilePath);
-
-                    // Ejemplo: Escribir algo en el archivo guardado
-                    try {
-                        FileWriter writer = new FileWriter(selectedFile);
-                        writer.write("Contenido del archivo guardado.");
-                        writer.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                // Iniciar un hilo para actualizar la barra de progreso
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i <= 100; i++) {
+                            final int progressValue = i;
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setValue(progressValue);
+                                }
+                            });
+                            try {
+                                Thread.sleep(100); // Simula un proceso
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
                     }
-                } else {
-                    selectedFileLabel.setText("No se guardó ningún archivo.");
-                }
+                });
+                thread.start();
             }
         });
 
+        // Crear un panel para contener la barra de progreso y el botón
         JPanel panel = new JPanel();
-        panel.add(openButton);
-        panel.add(saveButton);
-        panel.add(selectedFileLabel);
+        panel.add(progressBar);
+        panel.add(startButton);
 
+        // Agregar el panel al frame
         frame.add(panel);
-        frame.setSize(400, 150);
+
+        // Mostrar el frame
         frame.setVisible(true);
           
           
